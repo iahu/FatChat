@@ -1,0 +1,172 @@
+.im-wrapper {
+  font-family: Tahoma, 'Microsoft Yahei', sans-serif;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 560px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 9px rgba(25, 25, 25, 0.3);
+}
+.im-wrapper ul,
+.im-wrapper ol,
+.im-wrapper li {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+.im-wrapper .clearfix {
+  overflow: hidden;
+}
+.im-wrapper .clearfix:after,
+.im-wrapper .clearfix:before {
+  position: absolute;
+  content: ' ';
+  clear: both;
+}
+.im-wrapper .fl-l {
+  float: left;
+}
+.im-wrapper .fl-r {
+  float: right;
+}
+.im-wrapper .btn-plaint {
+  font-family: inherit;
+  background-color: transparent;
+  border: none;
+}
+.im-wrapper .im-top-bar {
+  padding: 10px;
+  background-color: #eee;
+  border-bottom: 1px solid #ddd;
+}
+.im-wrapper .im-top-bar .im-hd {
+  margin: 0;
+  color: #666;
+  font-size: 18px;
+  font-weight: bold;
+}
+.im-wrapper .im-top-bar .closer {
+  font-size: 18px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+}
+.im-wrapper .im-bd {
+  position: relative;
+}
+.im-wrapper .im-bd-left {
+  background-color: #f2f2f2;
+  margin-right: 180px;
+}
+.im-wrapper .im-msg-list-box {
+  height: 280px;
+  padding: 12px;
+  overflow-y: auto;
+}
+.im-wrapper .im-msg {
+  font-size: 12px;
+  clear: both;
+  width: 100%;
+  margin-bottom: 5px;
+}
+.im-wrapper .im-msg.received {
+  float: left;
+}
+.im-wrapper .im-msg.received .im-msg-bd {
+  background-color: #ccc;
+  color: #333;
+}
+.im-wrapper .im-msg.received .im-msg-bd:before {
+  margin-top: 1px;
+  margin-left: -20px;
+  content: ' ';
+  position: absolute;
+  border: 10px solid #ccc;
+  border-color: transparent #ccc #ccc transparent;
+}
+.im-wrapper .im-msg.sent {
+  float: right;
+  text-align: right;
+}
+.im-wrapper .im-msg.sent .im-msg-bd {
+  background-color: #0cf;
+  color: #fff;
+}
+.im-wrapper .im-msg.sent .im-msg-bd:after {
+  margin-top: 1px;
+  content: ' ';
+  position: absolute;
+  border: 10px solid #0cf;
+  border-color: transparent transparent #0cf #0cf;
+}
+.im-wrapper .im-msg .im-msg-info {
+  color: #bbb;
+}
+.im-wrapper .im-msg .im-msg-bd {
+  display: inline-block;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  margin: 10px 5px;
+}
+.im-wrapper .im-bd-right {
+  position: absolute;
+  background-color: #eee;
+  top: 0;
+  right: 0;
+  width: 180px;
+  height: 100%;
+}
+.im-wrapper .im-input-toolbar {
+  padding: 0 10px;
+  border-top: 1px solid #ddd;
+}
+.im-wrapper .im-input-toolbar .im-tb {
+  width: 24px;
+  padding: 6px 0;
+  background: url('/img/out.png') no-repeat;
+  text-indent: -99px;
+  overflow: hidden;
+}
+.im-wrapper .im-input-toolbar .im-tb.emoji {
+  background-position: 0px 2px;
+}
+.im-wrapper .im-input-toolbar .im-tb.photo {
+  background-position: -24px 2px;
+}
+.im-wrapper .im-input-outter {
+  position: relative;
+  padding: 0 12px;
+}
+.im-wrapper .im-input {
+  height: 60px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  border: 0;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: #333;
+  background-color: transparent;
+}
+.im-wrapper .im-input-box-bar {
+  padding: 10px;
+}
+.im-wrapper .im-send-btn {
+  padding: 5px 20px;
+  background-color: #39f;
+  border: 0;
+  border-radius: 4px;
+  color: #eee;
+  cursor: pointer;
+}
+.im-wrapper .im-send-btn:hover,
+.im-wrapper .im-send-btn:active {
+  background-color: #3af;
+}
+.im-wrapper .im-send-btn:disabled {
+  background-color: #aaa;
+  cursor: default;
+}

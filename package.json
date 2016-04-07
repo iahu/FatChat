@@ -1,0 +1,37 @@
+{
+  "name": "im",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "connect": "^3.4.1",
+    "connect-router": "0.0.2",
+    "serve-static": "^1.10.2",
+    "st": "^1.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-hash": "^3.0.6",
+    "gulp-import-css": "^0.1.2",
+    "gulp-less": "^3.0.5",
+    "gulp-line-ending-corrector": "^1.0.1",
+    "gulp-postcss": "^6.1.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-uglify": "^1.5.3",
+    "json-loader": "^0.5.4",
+    "postcss": "^5.0.19",
+    "postcss-font-normalize": "0.0.0",
+    "rmdir": "^1.2.0",
+    "serve-static": "^1.10.2",
+    "vinyl-named": "^1.1.0",
+    "webpack": "^1.12.14",
+    "webpack-stream": "^3.1.0"
+  }
+}
