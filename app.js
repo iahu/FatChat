@@ -4,8 +4,7 @@ var connect = require('connect');
 var app = new connect();
 var serveStatic = require('serve-static');
 var jsonpCallback = require('./lib/jsonp.js');
-var APIs = {};
-APIs.send = require('./lib/send.js');
+var APIs = require('./api.js');
 
 app.use(jsonpCallback);
 app.use(function (req, res, next) {

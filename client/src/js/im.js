@@ -4,7 +4,7 @@ var $wrapper = $('.im-wrapper');
 
 function sentMsg(data) {
 	return $.ajax({
-		url: '/api/send',
+		url: '/api/sendMsg',
 		dataType: 'jsonp',
 		data: data
 	});
@@ -12,8 +12,8 @@ function sentMsg(data) {
 
 $wrapper.on('click', '.im-send-btn', function(event) {
 	event.preventDefault();
-
-	sentMsg({}).done(function (data) {
+	var msg = $('.im-input', $wrapper).val();
+	sentMsg({msg: msg}).done(function (data) {
 		console.log(data);
 	})
 });
