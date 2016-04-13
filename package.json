@@ -9,11 +9,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "agentkeepalive": "^2.1.1",
+    "body-parser": "^1.15.0",
     "connect": "^3.4.1",
     "connect-router": "0.0.2",
     "mysql": "felixge/node-mysql",
-    "serve-static": "^1.10.2",
-    "st": "^1.1.0"
+    "nano": "^6.2.0",
+    "request": "^2.71.0",
+    "serve-static": "^1.10.2"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

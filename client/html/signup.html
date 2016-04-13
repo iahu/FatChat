@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>创建您的 胖子IM 帐户</title>
+	<link rel="stylesheet" href="/css/signup.css">
+</head>
+<body>
+	<div class="wrapper signup-page">
+		<div class="header-bar">
+			<div class="header">
+				<img src="/img/logo.png" alt="PANZI IM" class="logo">
+				<span class="sigin-btn">
+					<a href="/sigin" class="btn link-sigin">登录</a>
+				</span>
+			</div>
+		</div>
+
+		<div class="main content">
+			<h2>创建您的 胖子IM 帐户</h2>
+			<div class="clearfix">
+				<div class="signup">
+					<form action="/action/signup" method="POST" class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="email">邮箱</label>
+								<input type="email" name="email" id="email" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}.[a-zA-Z]{2,4}$">
+							</div>
+							<div class="form-group">
+								<label for="password">密码</label>
+								<input type="password" name="password" id="password" required="required" pattern="^[a-zA-Z\d-_]{6,16}$">
+							</div>
+							<div class="form-group">
+								<label for="password_check">确认密码</label>
+								<input type="password" name="password_check" id="password_check"  required="required" pattern="^[a-zA-Z\d-_]{6,16}$">
+							</div>
+							<div class="form-group">
+								<label for="nickname">昵称</label>
+								<input type="text" name="nickname" id="nickname" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{4,16}$">
+							</div>
+							<div class="form-group">
+								<label for="gender" required="required">性别</label>
+								<select name="gender" id="gender">
+									<option value="1">男</option>
+									<option value="2">女</option>
+									<option value="3">其他</option>
+								</select>
+							</div>
+							<div class="form-group submit-group">
+								<button type="submit" class="btn btn-large btn-submit">提交</button>
+							</div>
+					</form>
+				</div>
+				<div class="side-content">
+					<p class="baymax-say-dialog"><span class="baymax-say">Hello，我是白面儿。欢迎注册胖子IM！</span></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<p class="copyright">Shouzi &copy;2016</p>
+		</div>
+	</div>
+	<script src="/js/lib/jquery.js"></script>
+	<script src="/js/signup.js"></script>
+</body>
+</html>

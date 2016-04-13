@@ -1,10 +1,8 @@
-var $ = require('./lib/jquery.js');
-
 var $wrapper = $('.im-wrapper');
 
 function sentMsg(data) {
 	return $.ajax({
-		url: '/api/sendMsg',
+		url: '/api/message/send',
 		dataType: 'jsonp',
 		data: data
 	});

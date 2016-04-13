@@ -17,10 +17,10 @@ var fontNormalize = require('postcss-font-normalize');
 var importCSS = require('gulp-import-css');
 var cssmin = require('gulp-cssmin');
 
-var lec = require('gulp-line-ending-corrector');
-
 var path$ = require('path');
+var noBrowserify = [];
 var exportList = require('./fekit.config').export.map(function(path) {
+	if (path.browserify === false) {noBrowserify.push(path.path)}
 	return path.path || path;
 });
 var srcRoot = path$.join(__dirname, './src/');
@@ -42,6 +42,19 @@ exportList.forEach(function(path) {
 	var ext = path$.extname(path);
 	if ( !pathsList[ext] ) pathsList[ext] = [];
 	pathsList[ext].push( path$.join(srcRoot, path) );
+	var idx = noBrowserify.indexOf(path);
+	if (idx >= 0) {
+		noBrowserify[idx] = path$.join(srcRoot, path);
+	}
+});
+var noBrowserifyList = [];
+var browserifyList = [];
+pathsList['.js'].forEach(function(path) {
+	if ( noBrowserify.indexOf(path) >= 0 ) {
+		noBrowserifyList.push(path);
+	} else {
+		browserifyList.push(path);
+	}
 });
 
 // clean tasks
@@ -58,50 +71,38 @@ var processors = [fontNormalize];
 
 // build tasks
 gulp.task('build-css', function () {
-	gulp.src( pathsList['.scss'] || [] )
+	gulp.src( pathsList['.scss'] || [], {base: srcRoot} )
 		.pipe( sass() )
 		.pipe(sass().on('error', sass.logError))
-		.pipe(gulp.dest( cssDest ));
+		.pipe(gulp.dest( destRoot ));
 
-	gulp.src( pathsList['.less'] || [] )
+	gulp.src( pathsList['.less'] || [], {base: srcRoot} )
 		.pipe( less() )
 		.pipe( postcss(processors) )
-		.pipe(gulp.dest( cssDest ));
+		.pipe(gulp.dest( destRoot ));
 
 
-	gulp.src(pathsList['.css'] || [])
+	gulp.src(pathsList['.css'] || [], {base: srcRoot})
 		.pipe( postcss(processors) )
 		.pipe( importCSS() )
 		.pipe( cssmin() )
-		.pipe(gulp.dest( cssDest ));
+		.pipe(gulp.dest( destRoot ));
 });
 gulp.task('build-js', function () {
-	gulp.src(pathsList['.js'] || [])
+	gulp.src(browserifyList || [], {base: srcRoot})
 		.pipe(named())
 		.pipe(browserify())
 		.pipe(uglify())
 
-		.pipe(gulp.dest( jsDest ))
+		.pipe(gulp.dest( destRoot ));
 
-		.pipe(gulp.dest( verDest ))
+	gulp.src(noBrowserifyList || [], {base: srcRoot})
+		.pipe(named())
+		.pipe(uglify())
 
-		// .pipe(hash())
-		// .pipe(hash.manifest('versionMap.json', false))
-		// .pipe(gulp.dest( './ver/' ));
+		.pipe(gulp.dest( destRoot ))
 });
 
-// line-ending-correct
-gulp.task('lec', function () {
-	gulp.src('./html/**/*.html')
-		.pipe(lec({eolc: 'LF', verbose: true}))
-		.pipe( gulp.dest('./html/') );
-	gulp.src('./src/css/*.css')
-		.pipe(lec({eolc: 'LF', verbose: true}))
-		.pipe(gulp.dest('./src/'));
-	gulp.src('./src/js/*.js')
-		.pipe(lec({eolc: 'LF', verbose: true}))
-		.pipe(gulp.dest('./src/'));
-});
 
 
 // default task
