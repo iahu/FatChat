@@ -7,6 +7,49 @@
 </head>
 <body>
 	<div class="container">
+		<div class="main-wrapper">
+			<div class="main">
+				<div class="menu">
+					<ul class="menu-list">
+						<li class="menu-item session active"><button class="menu-bar">会话</button></li>
+						<li class="menu-item friends"><button class="menu-bar">好友</button></li>
+						<li class="menu-item setting"><button class="menu-bar">设置</button></li>
+					</ul>
+				</div>
+				<div class="panel-group">
+					<div class="main-panel session active">
+						<div class="panel-inner webkitscrollbar">
+							<ul class="session-list">
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+							</ul>
+						</div>
+					</div>
+					<div class="main-panel friends">
+						<div class="panel-inner webkitscrollbar">
+							<ul class="friends-list">
+								
+							</ul>
+						</div>
+					</div>
+					<div class="main-panel setting">
+						<div class="panel-inner webkitscrollbar">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="im-wrapper">
 			<div class="im-top-bar clearfix">
 				<h5 class="im-hd fl-l">胖子</h5>
@@ -15,7 +58,7 @@
 
 			<div class="im-bd">
 				<div class="im-bd-left">
-					<div class="im-msg-list-box">
+					<div class="im-msg-list-box webkitscrollbar">
 						<ul class="im-msg-list">
 							<li class="im-msg received">
 								<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
@@ -36,7 +79,7 @@
 
 						<div class="im-input-box">
 							<div class="im-input-outter">
-								<textarea class="im-input" autofocus="true"></textarea>
+								<textarea class="im-input" autofocus="true" maxlength="200"></textarea>
 							</div>
 							<div class="im-input-box-bar clearfix">
 								<button class="im-send-btn fl-r">发送</button>

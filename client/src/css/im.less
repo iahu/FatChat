@@ -1,4 +1,165 @@
 @import (less) './lib/normalize.css';
+
+.webkitscrollbar {
+	overflow: auto;
+}
+.webkitscrollbar::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+.webkitscrollbar::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+.webkitscrollbar::-webkit-scrollbar-thumb {
+  background: #929292;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+  cursor: pointer;
+}
+.webkitscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+.webkitscrollbar::-webkit-scrollbar-thumb:active {
+  background: #666;
+}
+.webkitscrollbar::-webkit-scrollbar-track {
+  background: #ebebeb;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+.webkitscrollbar::-webkit-scrollbar-track:hover {
+  background: #ebebeb;
+}
+.webkitscrollbar::-webkit-scrollbar-track:active {
+  background: #ebebeb;
+}
+.webkitscrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+body {
+	font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: url('/img/bg/3.jpg');
+	background-size: cover;
+}
+ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
+.clearfix {
+	overflow: hidden;
+}
+.clearfix:after,
+.clearfix:before {
+	position: absolute;
+	content: ' ';
+	clear: both;
+}
+.fl-l {float: left;}
+.fl-r {float: right;}
+.btn-plaint {
+	font-family: inherit;
+	background-color: transparent;
+	border: none;
+}
+
+.container {
+	height: 100%;
+	width: 1000px;
+	margin: 0 auto;
+}
+.main-wrapper {
+	float: left;
+	width: 260px;
+	height: 100%;
+
+	.main {
+		position: relative;
+		width: 100%;
+		background-color: #fff;
+		top: 10%;
+		height: 80%;
+		box-shadow: 0 0 9px 3px rgba(0, 0, 0, 0.3);
+	}
+		.menu {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			background-color: #444;
+			z-index: 3;
+		}
+
+		.menu-list {
+			width: 100%;
+			display: table;
+			overflow: hidden;
+		}
+		.menu-item {
+			display: table-cell;
+			width: 1%;
+			color: #fff;
+			border-left: 1px solid #222;
+			position: relative;
+			left: -1px;
+
+			.menu-bar {
+				cursor: pointer;
+				font-size: 12px;
+				display: block;
+				border: 0;
+				text-align: center;
+				width: 100%;
+				padding: 14px 0;
+				background-color: transparent;
+				color: inherit;
+			}
+
+			&.active {
+				background-color: #333;
+				color: #fff;
+			}
+		}
+
+
+		.panel-group {
+			position: relative;
+			float: left;
+			width: 100%;
+			height: 100%;
+
+			.panel-inner {
+				height: 100%;
+			}
+
+			.main-panel {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+
+				&.active {
+					z-index: 2;
+				}
+			}
+		}
+
+		.session-list {
+			margin-bottom: 42px;
+			overflow: auto;
+
+			> li {
+				height: 30px;
+				border-bottom: 1px solid #eee;
+				padding: 10px;
+				color: #666;
+			}
+		}
+}
+
 .im-wrapper {
 	font-family: Tahoma, 'Microsoft Yahei', sans-serif;
 	position: fixed;
@@ -8,24 +169,6 @@
 	// height: 480px;
 	border: 1px solid #ccc;
 	box-shadow: 0 0 9px rgba(25, 25, 25, 0.3);
-
-	ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
-	.clearfix {
-		overflow: hidden;
-	}
-	.clearfix:after,
-	.clearfix:before {
-		position: absolute;
-		content: ' ';
-		clear: both;
-	}
-	.fl-l {float: left;}
-	.fl-r {float: right;}
-	.btn-plaint {
-		font-family: inherit;
-		background-color: transparent;
-		border: none;
-	}
 
 	.im-top-bar {
 		padding: 10px;
@@ -66,19 +209,27 @@
 		width: 100%;
 		margin-bottom: 5px;
 
+		.im-msg-bd {
+			word-wrap: break-word;
+			word-break: break-all;
+			text-align: left;
+		}
+
 		&.received {
 			float: left;
 
 			.im-msg-bd {
+				position: relative;
 				background-color: #ccc;
 				color: #333;
 
 				&:before {
-					margin-top: 1px;
-					margin-left: -20px;
+					margin-top: 5px;
+					bottom: 6px;
+					left: -6px;
 					content: ' ';
 					position: absolute;
-					border: 10px solid #ccc;
+					border: 6px solid #ccc;
 					border-color: transparent #ccc #ccc transparent;
 				}
 			}
@@ -89,14 +240,16 @@
 			text-align: right;
 
 			.im-msg-bd {
+				position: relative;
 				background-color: #0cf;
 				color: #fff;
 
 				&:after {
-					margin-top: 1px;
+					bottom: 6px;
+					right: -6px;
 					content: ' ';
 					position: absolute;
-					border: 10px solid #0cf;
+					border: 6px solid #0cf;
 					border-color: transparent transparent #0cf #0cf;
 				}
 			}

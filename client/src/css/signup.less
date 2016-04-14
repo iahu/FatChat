@@ -1,7 +1,11 @@
 @import (less) './lib/normalize.css';
 body {font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;}
 .clearfix {overflow: hidden;}
+.fl-l {float: left;}
+.fl-r {float: right;}
 .signup-page {
+	a {text-decoration: none;}
+	a:hover,a:active {text-decoration: underline;}
 	.btn {
 		border: 0;
 		background-color: #09f;
@@ -10,11 +14,18 @@ body {font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;}
 		text-decoration: none;
 		border-radius: 4px;
 		line-height: 1.5;
-		font-size: inherit;
+		font-size: 1em;
+		font-family: inherit;
 		cursor: pointer;
+		display: inline-block;
 
 		&.btn-large {
 			padding: 6px 30px;
+		}
+
+		&.btn-white {
+			background-color: #eee;
+			color: #333;
 		}
 	}
 	.content {
@@ -45,7 +56,19 @@ body {font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;}
 
 		&.submit-group {
 			margin-top: 0.5em;
-			margin-left: 4.5em;
+			margin-left: 68px;
+
+			.link-signin {
+				margin-left: 45px;
+				line-height: 36px;
+			}
+		}
+
+		&.tips {
+			font-size: 12px;
+			color: #666;
+			margin-top: 5px;
+			margin-left: 68px;
 		}
 	}
 
@@ -58,7 +81,8 @@ body {font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;}
 			height: 64px;
 		}
 
-		.sigin-btn {
+		.signin-btn,
+		.signup-btn {
 			float: right;
 			height: 64px;
 			line-height: 64px;

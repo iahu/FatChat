@@ -6,39 +6,52 @@ var app = new connect();
 var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var jsonpCallback = require('./lib/jsonp.js');
-var Actions = {
-	signup: require('./action/signup.js')
-};
+var md5 = require('./lib/md5.js');
+var rewrite = require('./lib/rewrite.js');
+var makeSessionID = require('./lib/makeSessionID.js');
+var Actions = require('./action/');
 var APIs = {
 	message: require('./api/message/'),
 	user: require('./api/user/')
 };
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(jsonpCallback);
-app.use(function (req, res, next) {
-	var match, pathList, method, url, cookie;
+app.use(rewrite);
+app.use(routes);
 
-	url = req.url;
+app.use( serveStatic(__dirname + '/client/prd') );
+app.use( serveStatic(__dirname + '/client/html') );
+app.use( serveStatic(__dirname + '/client/img') );
+
+
+function routes(req, res, next) {
+	var match, pathList, method, cookie, parsedUrl;
+
 	cookie = querystring.parse(req.headers.cookie, '; ');
 	req.cookie = cookie;
 
-	// rewrite '/' to '/index.html'
-	if ( url.match(/^\/([?#](.+))?$/) ) {
-		req.url = '/index.html' + url.slice(1);
+	// rewrite
+	req.rewrite(/^\/([\?#](.+))?$/, '/index.html$1');
+	req.rewrite(/^\/prd\/(.+)?/, '/$1');
+	req.rewrite(/^\/img\/(.+)/, '/$1');
+
+	if ( /(.+)\.html/.test(req.url) &&
+		! /^\/(signin|signup)\.html([?#](.+))?$/.test(req.url) &&
+		! cookie.session ) {
+		// todo ∆•≈‰ session ”Î im/user ø‚
+		res.writeHead(302, {
+			'Location': '/signin.html'
+		});
+		res.end();
+		return;
 	}
-	// rewrite js/css url;
-	if ( url.match(/^\/prd\/(.+)\.(js|css)/) ) {
-		req.url = url.slice(4);
-	}
-	// rewrite img url;
-	if ( url.match(/^\/img\/(.+)/) ) {
-		req.url = url.slice(4);
-	}
-	if ( match = url.match(/\/(api|action)\/([^#\?]+)/) ) {
-		if (! cookie.session && ! /\/signup([?#](.+))?/.test(url) ) {
-			// todo ÂåπÈÖç session ‰∏é im/user Â∫ì
+
+	if ( match = req.url.match(/^\/(api|action)\/([^#\?]+)/) ) {
+		if (! cookie.session && ! /^\/(signin|signup)?([?#](.+))?/.test(req.url) ) {
+			// todo ∆•≈‰ session ”Î im/user ø‚
 			res.writeHead(302, {
-				'Location': '/signup.html'
+				'Location': '/signin.html'
 			});
 			res.end();
 			return;
@@ -57,11 +70,7 @@ app.use(function (req, res, next) {
 	}
 
 	return next();
-});
-app.use( serveStatic(__dirname + '/client/prd') );
-app.use( serveStatic(__dirname + '/client/html') );
-app.use( serveStatic(__dirname + '/client/img') );
-
+}
 
 http.createServer(app).listen(3000);
 console.log('server listen at port 3000');

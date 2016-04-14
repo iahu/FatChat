@@ -10,8 +10,8 @@
 		<div class="header-bar">
 			<div class="header">
 				<img src="/img/logo.png" alt="PANZI IM" class="logo">
-				<span class="sigin-btn">
-					<a href="/sigin" class="btn link-sigin">登录</a>
+				<span class="signin-btn">
+					<a href="/signin.html" class="btn link-signin">登录</a>
 				</span>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 					<form action="/action/signup" method="POST" class="form-horizontal" role="form">
 							<div class="form-group">
 								<label for="email">邮箱</label>
-								<input type="email" name="email" id="email" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}.[a-zA-Z]{2,4}$">
+								<input type="email" name="email" id="email" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}.[a-zA-Z]{2,4}$" autofocus="autofocus">
 							</div>
 							<div class="form-group">
 								<label for="password">密码</label>
@@ -47,6 +47,10 @@
 							</div>
 							<div class="form-group submit-group">
 								<button type="submit" class="btn btn-large btn-submit">提交</button>
+							</div>
+							<div class="form-group tips">
+								已经注册了帐户？
+								<a href="/signin.html" class="link-signin">立即登录</a>
 							</div>
 					</form>
 				</div>
