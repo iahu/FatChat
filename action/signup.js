@@ -52,9 +52,9 @@ module.exports = function (req, res, next) {
 			res.writeHead(302, {
 				'Location': '/',
 				'Set-Cookie': [
-					'session=' + makeSessionID(body) + '; path=/; httponly; ',
-					'email='+ params.email + '; path=/; httponly; ',
-					'nickname='+ params.nickname + '; path=/; httponly'
+					'session=' + makeSessionID(body) + '; path=/; ',
+					'email='+ params.email + '; path=/; ',
+					'nickname='+ params.nickname + '; path=/;'
 				]
 			});
 			res.end('success');

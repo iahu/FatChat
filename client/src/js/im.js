@@ -130,3 +130,30 @@ function renderMsg(data) {
 function scrollToBottom($el) {
 	$el.scrollTop( $el[0].scrollHeight );
 }
+
+function togglePanel($wrapper) {
+	$wrapper.on('click', '.menu-item', function(event) {
+		event.preventDefault();
+		var dataFor = $(this).data('for');
+
+		$(this).siblings('.menu-item').removeClass('active');
+		$(this).addClass('active');
+
+		$wrapper
+			.find('.panel-body').removeClass('active')
+			.filter('.'+dataFor).addClass('active');
+	});
+}
+
+
+var data = {
+	nickname: getCookie('nickname'),
+	session: getCookie('session'),
+	email: getCookie('email')
+};
+
+var tplMain = $('#main-tpl').html();
+var tplIm = $('#im-tpl').html();
+
+$('.main-wrapper', $wrapper).html(  );
+togglePanel($('.main-wrapper'));

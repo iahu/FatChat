@@ -7,17 +7,48 @@
 </head>
 <body>
 	<div class="container">
-		<div class="main-wrapper">
-			<div class="main">
-				<div class="menu">
-					<ul class="menu-list">
-						<li class="menu-item session active"><button class="menu-bar">会话</button></li>
-						<li class="menu-item friends"><button class="menu-bar">好友</button></li>
-						<li class="menu-item setting"><button class="menu-bar">设置</button></li>
-					</ul>
+		<div class="main-wrapper"></div>
+		<div class="im-wrapper"> </div>
+	</div>
+
+	<div class="modal fade" id="modal-id">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Modal title</h4>
 				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/x-template" id="main-tpl">
+		<div class="main">
+			<div class="top-bar">
+				<div class="inner">
+					<div class="avatar-wrapper">
+						
+					</div>
+					<p class="name-info">{{nickname}}</p>
+				</div>
+			</div>
+			<div class="menu">
+				<ul class="menu-list">
+					<li data-for="session" class="menu-item session active"><button class="menu-bar">会话</button></li>
+					<li data-for="friends" class="menu-item friends"><button class="menu-bar">好友</button></li>
+					<li data-for="setting" class="menu-item setting"><button class="menu-bar">设置</button></li>
+				</ul>
+			</div>
+			<div class="main-body">
 				<div class="panel-group">
-					<div class="main-panel session active">
+					<div class="panel-body session active">
 						<div class="panel-inner webkitscrollbar">
 							<ul class="session-list">
 								<li><span class="title">a</span></li>
@@ -35,27 +66,53 @@
 							</ul>
 						</div>
 					</div>
-					<div class="main-panel friends">
+					<div class="panel-body friends">
 						<div class="panel-inner webkitscrollbar">
 							<ul class="friends-list">
-								
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
 							</ul>
 						</div>
 					</div>
-					<div class="main-panel setting">
+					<div class="panel-body setting">
 						<div class="panel-inner webkitscrollbar">
-							
+							<ul>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+								<li><span class="title">a</span></li>
+								<li><span class="title">b</span></li>
+								<li><span class="title">c</span></li>
+							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="im-wrapper">
+	</script>
+	<script type="text/x-template" id="im-tpl">
+		<div class="im">
 			<div class="im-top-bar clearfix">
-				<h5 class="im-hd fl-l">胖子</h5>
+				<h5 class="im-hd fl-l">{{to}}</h5>
 				<button class="closer btn-plaint fl-r">&times;</button>
 			</div>
-
+			
 			<div class="im-bd">
 				<div class="im-bd-left">
 					<div class="im-msg-list-box webkitscrollbar">
@@ -70,13 +127,13 @@
 							</li>
 						</ul>
 					</div>
-
+			
 					<div class="im-input-wrapper">
 						<div class="im-input-toolbar">
 							<button class="im-tb emoji btn-plaint">表情</button>
 							<button class="im-tb photo btn-plaint">图片</button>
 						</div>
-
+			
 						<div class="im-input-box">
 							<div class="im-input-outter">
 								<textarea class="im-input" autofocus="true" maxlength="200"></textarea>
@@ -87,12 +144,11 @@
 						</div>
 					</div>
 				</div>
-
+			
 				<div class="im-bd-right">af</div>
 			</div>
 		</div>
-	</div>
-
+	</script>
 	<script src="/js/lib/jquery.js"></script>
 	<script src="/js/im.js"></script>
 </body>

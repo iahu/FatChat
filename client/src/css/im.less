@@ -1,4 +1,5 @@
 @import (less) './lib/normalize.css';
+@import './less/modal.less';
 
 .webkitscrollbar {
 	overflow: auto;
@@ -44,8 +45,8 @@ body {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background: url('/img/bg/3.jpg');
-	background-size: cover;
+	background: url('/img/bg/3.jpg') no-repeat;
+	// background-size: cover;
 }
 ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 .clearfix {
@@ -123,32 +124,73 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 		}
 
+		.top-bar {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 78px;
+			background-color: #f2f2f2;
+			border-bottom: 1px solid #ddd;
+
+			.inner {
+				padding: 5px;
+			}
+
+			.avatar-wrapper {
+				width: 60px;
+				height: 60px;
+				border: 2px solid #ccc;
+				border-radius: 4px;
+				float: left;
+			}
+			.name-info {
+				float: left;
+				padding: 10px;
+				margin: 0;
+				color: #333;
+			}
+		}
+
+		.main-body {
+			top: 40px;
+			height: 100%;
+			padding-top: 80px;
+			padding-bottom: 42px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-ms-box-sizing: border-box;
+			box-sizing: border-box;
+		}
 
 		.panel-group {
 			position: relative;
 			float: left;
 			width: 100%;
 			height: 100%;
+			overflow: hidden;
+			background-color: #fff;
 
 			.panel-inner {
 				height: 100%;
 			}
 
-			.main-panel {
+			.panel-body {
 				position: absolute;
-				left: 0;
+				left: 100%;
 				top: 0;
 				width: 100%;
 				height: 100%;
 
 				&.active {
+					left: 0;
 					z-index: 2;
+					transition: left 0.3s;
 				}
 			}
 		}
 
 		.session-list {
-			margin-bottom: 42px;
 			overflow: auto;
 
 			> li {
@@ -162,13 +204,20 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 
 .im-wrapper {
 	font-family: Tahoma, 'Microsoft Yahei', sans-serif;
-	position: fixed;
-	bottom: 10px;
-	right: 10px;
+	position: absolute;
+	height: 80%;
+	top: 12%;
+	// position: fixed;
+	// bottom: 10px;
+	// right: 10px;
 	width: 560px;
+	margin-left: 350px;
 	// height: 480px;
-	border: 1px solid #ccc;
-	box-shadow: 0 0 9px rgba(25, 25, 25, 0.3);
+	
+	.im {
+		border: 1px solid #ccc;
+		box-shadow: 0 0 9px rgba(25, 25, 25, 0.3);
+	}
 
 	.im-top-bar {
 		padding: 10px;

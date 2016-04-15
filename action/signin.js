@@ -4,6 +4,7 @@ module.exports = function (req, res, next) {
 	var db = require('../lib/db.js').use('im/user');
 	var paramsValidate = require('../lib/params-validate.js');
 	var md5 = require('../lib/md5.js');
+	var makeSessionID = require('../lib/makeSessionID.js');
 	var checkParam = paramsValidate.checkParam;
 	var params = req.body;
 	var msg, md5Password;
@@ -36,9 +37,9 @@ module.exports = function (req, res, next) {
 						'session=' + makeSessionID({
 							email: params.email,
 							password: md5Password
-						}) + '; path=/; httponly; ',
-						'email='+ body.email + '; path=/; httponly; ',
-						'nickname='+ body.nickname + '; path=/; httponly'
+						}) + '; path=/; ',
+						'email='+ body.email + '; path=/; ',
+						'nickname='+ body.nickname + '; path=/;'
 					]
 				});
 				res.end();

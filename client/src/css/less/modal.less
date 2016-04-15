@@ -1,0 +1,60 @@
+.modal {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: rgba(0,0,0,0.3);
+	z-index: 999;
+	display: none;
+
+	&.active {
+		display: block;
+	}
+
+	.modal-dialog {
+		width: 480px;
+		margin: 160px auto;
+		background-color: #fff;
+		box-shadow: 0 0 9px rgba(0, 0, 0, 0.5);
+	}
+	.modal-header {
+		position: relative;
+		.modal-title {
+			padding: 10px;
+			font-size: 14px;
+			color: #666;
+		}
+		.close {
+			font-size: 20px;
+			font-family: inherit;
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			background-color: transparent;
+			border: 0;
+			color: #999;
+			cursor: pointer;
+		}
+	}
+	.modal-body {
+		padding: 15px;
+	}
+	.modal-footer {
+		text-align: center;
+		padding: 20px 0;
+
+		.btn {
+			background: #09f;
+			color: #fff;
+			padding: 8px 15px;
+			border: 0;
+			cursor: pointer;
+
+			&.btn-default {
+				background: #ddd;
+				color: #333;
+			}
+		}
+	}
+}
