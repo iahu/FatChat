@@ -1,4 +1,5 @@
 var
+handlebars = require('./lib/handlebars.js');
 getCookie = function (name) {
 	var value = "; " + document.cookie;
 	var parts = value.split("; " + name + "=");
@@ -47,7 +48,6 @@ getTimeString = function(ts) {
     now += zPad(date.getSeconds(),2) + "";
     return now;
 },
-getTimeStringDiff,
 _getTimeStringDiff = function (tsDiff) {
 	return function () {
 		return getTimeString( +new Date() + tsDiff );
@@ -155,5 +155,5 @@ var data = {
 var tplMain = $('#main-tpl').html();
 var tplIm = $('#im-tpl').html();
 
-$('.main-wrapper', $wrapper).html(  );
+$('.main-wrapper').html( handlebars.compile(tplMain)(data) );
 togglePanel($('.main-wrapper'));
