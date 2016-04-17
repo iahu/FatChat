@@ -1,5 +1,6 @@
 @import (less) './lib/normalize.css';
 @import './less/modal.less';
+@import './less/list.less';
 
 .webkitscrollbar {
 	overflow: auto;
@@ -65,6 +66,28 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 	background-color: transparent;
 	border: none;
 }
+.btn {
+	border: 0;
+	background-color: #09f;
+	padding: 6px 20px;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 4px;
+	line-height: 1.5;
+	font-size: 1em;
+	font-family: inherit;
+	cursor: pointer;
+	display: inline-block;
+
+	&.btn-large {
+		padding: 6px 30px;
+	}
+
+	&.btn-white {
+		background-color: #eee;
+		color: #333;
+	}
+}
 
 .container {
 	height: 100%;
@@ -129,24 +152,27 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			left: 0;
 			top: 0;
 			width: 100%;
-			height: 78px;
+			height: 79px;
 			background-color: #f2f2f2;
 			border-bottom: 1px solid #ddd;
 
 			.inner {
-				padding: 5px;
+				padding: 8px;
 			}
 
 			.avatar-wrapper {
-				width: 60px;
-				height: 60px;
-				border: 2px solid #ccc;
+				width: 64px;
+				height: 64px;
+				outline: 1px solid #ccc;
+				overflow: hidden;
 				border-radius: 4px;
 				float: left;
+				background-color: #fff;
 			}
 			.name-info {
+				font-size: 18px;
 				float: left;
-				padding: 10px;
+				padding: 8px 14px;
 				margin: 0;
 				color: #333;
 			}
@@ -190,13 +216,14 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 		}
 
-		.session-list {
+		.session-list,
+		.friends-list {
 			overflow: auto;
+			font-size: 14px;
 
 			> li {
-				height: 30px;
 				border-bottom: 1px solid #eee;
-				padding: 10px;
+				padding: 14px 10px;
 				color: #666;
 			}
 		}
@@ -379,6 +406,65 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		&:disabled {
 			background-color: #aaa;
 			cursor: default;
+		}
+	}
+}
+
+#addfriends-modal {
+
+	.search-box {
+		background-color: #eee;
+		padding: 20px 15px;
+		input {
+			border: 1px solid #06f;
+			padding: 0 10px;
+			height: 34px;
+			width: 360px;
+			float: left;
+			outline: none;
+		}
+		button {
+			float: left;
+			height: 36px;
+			width: 68px;
+			background: #06f;
+			color: #fff;
+			border: 0;
+		}
+	}
+
+	.friends-list {
+		height: 180px;
+		padding: 10px;
+
+
+		.friend-item {
+			float: left;
+			display: inline;
+			border: 1px solid #89a;
+			margin: 15px 5px;
+			padding: 10px;
+			width: 100px;
+			text-align: center;
+			cursor: pointer;
+
+			img {
+				width: 64px;
+				height: 64px;
+			}
+
+			p {
+				margin: 0;
+				margin-top: 10px;
+				font-size: 12px;
+
+				.nickname {
+					color: #f33;
+				}
+				.gender {
+					color: #069;
+				}
+			}
 		}
 	}
 }

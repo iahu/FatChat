@@ -4,7 +4,7 @@
 	height: 100%;
 	left: 0;
 	top: 0;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0,0,0,0.7);
 	z-index: 999;
 	display: none;
 
@@ -14,16 +14,18 @@
 
 	.modal-dialog {
 		width: 480px;
-		margin: 160px auto;
+		margin: 120px auto;
 		background-color: #fff;
 		box-shadow: 0 0 9px rgba(0, 0, 0, 0.5);
 	}
 	.modal-header {
 		position: relative;
+		overflow: hidden;
 		.modal-title {
 			padding: 10px;
 			font-size: 14px;
 			color: #666;
+			margin: 0;
 		}
 		.close {
 			font-size: 20px;
@@ -38,7 +40,7 @@
 		}
 	}
 	.modal-body {
-		padding: 15px;
+		// padding: 15px;
 	}
 	.modal-footer {
 		text-align: center;

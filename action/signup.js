@@ -1,12 +1,16 @@
 module.exports = function (req, res, next) {
-	var db = require('../lib/db.js').use('im/user');
+	var db = require('../lib/mydb.js');
+	var avatarData = require('../avatar-data.json');
 	var querystring = require('querystring');
-	var paramsValidate = require('../lib/params-validate.js');
+	var paramsValidate = require('../lib/paramsValidate.js');
 	var md5 = require('../lib/md5.js');
 	var makeSessionID = require('../lib/makeSessionID.js');
 	var checkParam = paramsValidate.checkParam;
 	var params = req.body;
 	var msg = '';
+	var insertData = null;
+	var avatar;
+	var session;
 	if (req.method !== 'POST') {
 		return next();
 	}
@@ -31,33 +35,43 @@ module.exports = function (req, res, next) {
 	if (msg) {
 		res.responseJSONP({status: 'ok', success: false, msg: msg});
 	}
-	db.insert({
+	avatar = avatarData[ Math.floor(Math.random() * avatarData.length) ];
+	insertData = {
 		password: md5(params.password),
-		email: params.email,
-		nickname: params.nickname,
+		email: params.email.trim(),
+		nickname: params.nickname.trim(),
 		gender: params.gender,
+		avatar: avatar,
 		createtime: +new Date()
-	}, params.email, function (err, body) {
+	};
+	db.query( 'SELECT id, email from users WHERE email='+db.escape(insertData.email), function (err, body) {
 		if (err) {
-			if (err.error === 'conflict') {
-				res.writeHead(302, {
-					'Location': '/singup.html',
-					'Set-Cookie': 'singup=1; Max-Age=3; path=/'
-				});
-				res.end();
-			} else {
-				res.responseJSONP({status: 'ok', success: false, msg: err.message});
-			}
-		} else {
-			res.writeHead(302, {
-				'Location': '/',
-				'Set-Cookie': [
-					'session=' + makeSessionID(body) + '; path=/; ',
-					'email='+ params.email + '; path=/; ',
-					'nickname='+ params.nickname + '; path=/;'
-				]
-			});
-			res.end('success');
+			return res.responseJSONP({status: 'ok', success: false, msg: err.message});
 		}
-	});
+
+		if ( body && body.length > 0 ) {
+			res.responseJSONP({status: 'ok', success: false, msg: '该邮箱已经注册过'});
+			return;
+		}
+
+		db.insert(insertData, 'users', function (err, body) {
+			if (err) {
+				res.responseJSONP({status: 'ok', success: false, msg: err.message});
+			} else {
+				session = makeSessionID( cookie.P0 );
+				res.writeHead(302, {
+					'Location': '/',
+					'Set-Cookie': [
+						's=' + session.id + '; path=/; ',
+						'P0='+ session.key + '; path=/; ',
+						'P1='+ encodeURIComponent(JSON.stringify({avatar: avatar,
+							email: insertData.email,
+							uid: body.id,
+							nickname: insertData.nickname})) + '; path=/',
+					]
+				});
+				res.end('success');
+			}
+		});
+	} );
 };

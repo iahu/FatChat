@@ -1,0 +1,52 @@
+.list-panel {
+	background-color: #f2f2f2;
+	
+	.list-group {
+		background-color: #fff;
+		padding: 0;
+		margin: 12px 0;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+		overflow: hidden;
+
+		.list-item {
+			margin: 0 0 0 10px;
+			padding: 0;
+			border-bottom: 1px solid #eee;
+
+			.list-link {
+				position: relative;
+				display: block;
+				font-size: 12px;
+				padding: 10px 24px 10px 0;
+				overflow: hidden;
+				text-decoration: none;
+				color: #333;
+
+
+				&:after {
+					content: '>';
+					position: absolute;
+					right: 8px;
+					top: 50%;
+					margin-top: -6px;
+					color: #eee;
+					font-size: 18px;
+					line-height: 1;
+					font-family: sans-serif;
+				}
+			}
+			&:last-child {
+				border-bottom: 0;
+			}
+
+			.list-title {
+				float: left;
+			}
+			.list-detail {
+				float: right;
+				color: #999;
+			}
+		}
+	}
+}

@@ -22,8 +22,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary">确定</button>
 				</div>
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 			<div class="top-bar">
 				<div class="inner">
 					<div class="avatar-wrapper">
-						
+						<img src="/img/avatar/{{avatar}}" alt="{{nickname}}" width="64" height="64">
 					</div>
 					<p class="name-info">{{nickname}}</p>
 				</div>
@@ -51,54 +51,52 @@
 					<div class="panel-body session active">
 						<div class="panel-inner webkitscrollbar">
 							<ul class="session-list">
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
 							</ul>
 						</div>
 					</div>
 					<div class="panel-body friends">
 						<div class="panel-inner webkitscrollbar">
 							<ul class="friends-list">
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
 							</ul>
 						</div>
 					</div>
 					<div class="panel-body setting">
-						<div class="panel-inner webkitscrollbar">
-							<ul>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
-								<li><span class="title">a</span></li>
-								<li><span class="title">b</span></li>
-								<li><span class="title">c</span></li>
+						<div class="panel-inner webkitscrollbar list-panel">
+							<ul class="list-group">
+								<li class="list-item">
+									<a href="#setting/nickname"  data-action="setting.nickname" class="list-link">
+										<span class="list-title">昵称</span>
+										<span class="list-detail">{{nickname}}</span>
+									</a>
+								</li>
+								<li class="list-item">
+									<a href="#setting/email" data-action="setting.email" class="list-link">
+										<span class="list-title">帐号(邮箱)</span>
+										<span class="list-detail">{{email}}</span>
+									</a>
+								</li>
+								<li class="list-item">
+									<a href="#setting/gender" class="list-link" data-action="gender">
+										<span class="list-title">性别</span>
+										<span class="list-detail">{{#genderHelper}}{{gender}}{{/genderHelper}}</span>
+									</a>
+								</li>
+							</ul>
+
+							<ul class="list-group">
+								<li class="list-item">
+									<a href="#setting/about" class="list-link" data-action="about">
+										<span class="list-title">关于</span>
+									</a>
+								</li>
+							</ul>
+
+							<ul class="list-group">
+								<li class="list-item">
+									<a href="#setting/quit" class="list-link" data-action="quit">
+										<span class="list-title">退出</span>
+									</a>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -148,6 +146,43 @@
 				<div class="im-bd-right">af</div>
 			</div>
 		</div>
+	</script>
+	<script type="text/x-template" id="addfriends-tpl">
+		<form action="#" id="addfriends-form" onsubmit="return false;">
+			<div class="form-group search-box clearfix">
+				<input type="text" name="friends_info" id="friends_info" placeholder="输入对方邮箱或昵称来查找好友" autocomplete="no" autofocus="autofocus">
+				<button type="submit">查找</button>
+			</div>
+		</form>
+		<div class="friends-list"></div>
+	</script>
+	<script type="text/x-template" id="search-friends-list-tpl">
+		{{#.}}
+			<div class="friend-item" data-action="addfriends" data-arg="{{email}}">
+				<img src="/img/avatar/{{avatar}}" alt="{{nickname}}">
+				<p>
+					<span class="nickname">{{nickname}}</span>
+					<span class="gender">{{#genderHelper}}{{gender}}{{/genderHelper}}</span>
+				</p>
+			</div>
+		{{/.}}
+	</script>
+	<script type="text/x-template" id="session-list-tpl">
+		{{#session}}
+			<li><span class="title">{{title}}</span></li>
+		{{/session}}
+		{{^session}}
+			<li><span class="title">暂无会话</span></li>
+		{{/session}}
+	</script>
+	<script type="text/x-template" id="friends-list-tpl">
+		<li><i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">添加好友</a>	</li>
+		{{#friends}}
+			<li><span class="avatar">{{avatar}}</span><span class="title">{{nickname}}</span></li>
+		{{/friends}}
+		{{^friends}}
+			<li><span class="title">你还没有增加好友</span></li>
+		{{/friends}}
 	</script>
 	<script src="/js/lib/jquery.js"></script>
 	<script src="/js/im.js"></script>

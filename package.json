@@ -14,7 +14,6 @@
     "connect": "^3.4.1",
     "connect-router": "0.0.2",
     "handlebars": "^4.0.5",
-    "mysql": "felixge/node-mysql",
     "nano": "^6.2.0",
     "request": "^2.71.0",
     "serve-static": "^1.10.2"
@@ -34,7 +33,6 @@
     "postcss": "^5.0.19",
     "postcss-font-normalize": "0.0.0",
     "rmdir": "^1.2.0",
-    "serve-static": "^1.10.2",
     "vinyl-named": "^1.1.0",
     "webpack": "^1.12.14",
     "webpack-stream": "^3.1.0"

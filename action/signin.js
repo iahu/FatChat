@@ -1,12 +1,11 @@
 module.exports = function (req, res, next) {
-	// var createUser = require('../api/user/createUser.js');
-	// return createUser(req, res, next);
-	var db = require('../lib/db.js').use('im/user');
-	var paramsValidate = require('../lib/params-validate.js');
+	var db = require('../lib/mydb.js');
+	var paramsValidate = require('../lib/paramsValidate.js');
 	var md5 = require('../lib/md5.js');
 	var makeSessionID = require('../lib/makeSessionID.js');
 	var checkParam = paramsValidate.checkParam;
 	var params = req.body;
+	var session;
 	var msg, md5Password;
 
 	switch(false) {
@@ -21,7 +20,9 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: msg});
 	}
 
-	db.get(params.email, function (err, body) {
+	db.query('SELECT id,email, nickname, avatar FROM users WHERE email='+
+		db.escape(params.email) + ' AND password=' +
+		db.escape( md5(params.password) )  +' LIMIT 1', function (err, body) {
 		if (err) {
 			res.writeHead(302, {
 				'Location': '/sigin.html',
@@ -29,17 +30,18 @@ module.exports = function (req, res, next) {
 			});
 			res.end();
 		} else {
-			md5Password = md5(params.password);
-			if ( md5Password === body.password ) {
+			if ( body && body.length === 1 ) {
+				body = body[0];
+				session = makeSessionID(body.id);
 				res.writeHead(302, {
 					'Location': '/',
 					'Set-Cookie': [
-						'session=' + makeSessionID({
-							email: params.email,
-							password: md5Password
-						}) + '; path=/; ',
-						'email='+ body.email + '; path=/; ',
-						'nickname='+ body.nickname + '; path=/;'
+						's=' + session.id + '; path=/; ',
+						'P0=' + session.key + '; path=/; ',
+						'P1='+ encodeURIComponent(JSON.stringify({avatar: body.avatar,
+							email: body.email,
+							uid: body.id,
+							nickname: body.nickname})) + '; path=/;'
 					]
 				});
 				res.end();

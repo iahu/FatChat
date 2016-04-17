@@ -67,8 +67,6 @@ gulp.task('clean', function () {
 	rmdir(verDest);
 });
 
-var processors = [fontNormalize];
-
 // build tasks
 gulp.task('build-css', function () {
 	gulp.src( pathsList['.scss'] || [], {base: srcRoot} )
@@ -78,12 +76,10 @@ gulp.task('build-css', function () {
 
 	gulp.src( pathsList['.less'] || [], {base: srcRoot} )
 		.pipe( less() )
-		.pipe( postcss(processors) )
 		.pipe(gulp.dest( destRoot ));
 
 
 	gulp.src(pathsList['.css'] || [], {base: srcRoot})
-		.pipe( postcss(processors) )
 		.pipe( importCSS() )
 		.pipe( cssmin() )
 		.pipe(gulp.dest( destRoot ));
@@ -92,13 +88,13 @@ gulp.task('build-js', function () {
 	gulp.src(browserifyList || [], {base: srcRoot})
 		.pipe(named())
 		.pipe(browserify())
-		.pipe(uglify())
+		//.pipe(uglify())
 
 		.pipe(gulp.dest( destRoot ));
 
 	gulp.src(noBrowserifyList || [], {base: srcRoot})
 		.pipe(named())
-		.pipe(uglify())
+		//.pipe(uglify())
 
 		.pipe(gulp.dest( destRoot ))
 });

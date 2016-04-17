@@ -11,6 +11,7 @@ var rewrite = require('./lib/rewrite.js');
 var makeSessionID = require('./lib/makeSessionID.js');
 var Actions = require('./action/');
 var APIs = {
+	searchFriends: require('./api/searchFriends.js'),
 	message: require('./api/message/'),
 	user: require('./api/user/')
 };
@@ -39,7 +40,7 @@ function routes(req, res, next) {
 	if ( /(.+)\.html/.test(req.url) &&
 		! /^\/(signin|signup)\.html([?#](.+))?$/.test(req.url) &&
 		! cookie.session ) {
-		// todo Æ¥Åä session Óë im/user ¿â
+		// todo æ ¡éªŒ session æ˜¯å¦åŒ¹é… im/user
 		res.writeHead(302, {
 			'Location': '/signin.html'
 		});
@@ -49,7 +50,7 @@ function routes(req, res, next) {
 
 	if ( match = req.url.match(/^\/(api|action)\/([^#\?]+)/) ) {
 		if (! cookie.session && ! /^\/(signin|signup)?([?#](.+))?/.test(req.url) ) {
-			// todo Æ¥Åä session Óë im/user ¿â
+			// todo æ ¡éªŒ session æ˜¯å¦åŒ¹é… im/user
 			res.writeHead(302, {
 				'Location': '/signin.html'
 			});
