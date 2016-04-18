@@ -4,7 +4,7 @@ module.exports = function (req, res, next) {
 	var querystring = require('querystring');
 	var params = querystring.parse(req._parsedUrl.query);
 	var cookie = req.cookie;
-	if ( ! (cookie.session && params.uid) ) {
+	if ( ! (cookie.s && params.uid) ) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail or bad arguments'});
 	}
 

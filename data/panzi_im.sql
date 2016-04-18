@@ -1,35 +1,42 @@
 /*
- Navicat MySQL Data Transfer
+Navicat MySQL Data Transfer
 
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 50710
- Source Host           : localhost
- Source Database       : panzi_im
+Source Server         : mysql
+Source Server Version : 50712
+Source Host           : localhost:3306
+Source Database       : panzi_im
 
- Target Server Type    : MySQL
- Target Server Version : 50710
- File Encoding         : utf-8
+Target Server Type    : MYSQL
+Target Server Version : 50712
+File Encoding         : 65001
 
- Date: 04/17/2016 23:26:07 PM
+Date: 2016-04-18 19:39:24
 */
 
-SET NAMES utf8;
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
---  Table structure for `friendship`
+-- Table structure for friendship
 -- ----------------------------
 DROP TABLE IF EXISTS `friendship`;
 CREATE TABLE `friendship` (
-  `id` int(5) NOT NULL,
-  `user_id` int(5) DEFAULT NULL,
-  `friend_id` int(5) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `user_id` int(5) NOT NULL,
+  `friend_id` int(5) NOT NULL DEFAULT '0',
+  `mutual` int(1) NOT NULL,
+  PRIMARY KEY (`user_id`,`friend_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
---  Table structure for `users`
+-- Records of friendship
+-- ----------------------------
+INSERT INTO `friendship` VALUES ('1', '2', '0');
+INSERT INTO `friendship` VALUES ('1', '3', '0');
+INSERT INTO `friendship` VALUES ('1', '6', '0');
+INSERT INTO `friendship` VALUES ('1', '7', '0');
+INSERT INTO `friendship` VALUES ('1', '9', '0');
+
+-- ----------------------------
+-- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -45,10 +52,11 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
---  Records of `users`
+-- Records of users
 -- ----------------------------
-BEGIN;
-INSERT INTO `users` VALUES ('1', 'iahu1988@gmail.com', 'Comics-Ironman-Patriot-icon.png', '1460875143261', '白火', '61d963a67f0b1cadbe85f790b7680d70', '1', null), ('2', 'iahu1111@yahoo.cn', 'Comics-Avengers-icon.png', '1460878849121', '火星特工', '61d963a67f0b1cadbe85f790b7680d70', '2', null), ('3', '347006609@qq.com', 'Comics-Shadowcat-icon.png', '1460878947198', '白酒干一杯', '61d963a67f0b1cadbe85f790b7680d70', '1', null), ('6', '983308797@qq.com', 'Comics-Spiderman-Morales-icon.png', '1460880262716', '好男儿', '61d963a67f0b1cadbe85f790b7680d70', '1', null), ('7', '347006610@qq.com', 'Comics-Avengers-icon.png', '1460880427087', '后来居上', '61d963a67f0b1cadbe85f790b7680d70', '1', null), ('9', '137182049@qq.com', 'Comics-Hero-Grey-icon.png', '1460902051771', '胖子', '61d963a67f0b1cadbe85f790b7680d70', '2', null);
-COMMIT;
-
-SET FOREIGN_KEY_CHECKS = 1;
+INSERT INTO `users` VALUES ('1', 'iahu1988@gmail.com', 'Comics-Ironman-Patriot-icon.png', '1460875143261', '白火', '61d963a67f0b1cadbe85f790b7680d70', '1', null);
+INSERT INTO `users` VALUES ('2', 'iahu1111@yahoo.cn', 'Comics-Avengers-icon.png', '1460878849121', '火星特工', '61d963a67f0b1cadbe85f790b7680d70', '2', null);
+INSERT INTO `users` VALUES ('3', '347006609@qq.com', 'Comics-Shadowcat-icon.png', '1460878947198', '白酒干一杯', '61d963a67f0b1cadbe85f790b7680d70', '1', null);
+INSERT INTO `users` VALUES ('6', '983308797@qq.com', 'Comics-Spiderman-Morales-icon.png', '1460880262716', '好男儿', '61d963a67f0b1cadbe85f790b7680d70', '1', null);
+INSERT INTO `users` VALUES ('7', '347006610@qq.com', 'Comics-Avengers-icon.png', '1460880427087', '后来居上', '61d963a67f0b1cadbe85f790b7680d70', '1', null);
+INSERT INTO `users` VALUES ('9', '137182049@qq.com', 'Comics-Hero-Grey-icon.png', '1460902051771', '胖子', '61d963a67f0b1cadbe85f790b7680d70', '2', null);

@@ -39,18 +39,25 @@ function routes(req, res, next) {
 
 	if ( /(.+)\.html/.test(req.url) &&
 		! /^\/(signin|signup)\.html([?#](.+))?$/.test(req.url) &&
-		! cookie.session ) {
-		// todo 鏍￠獙 session 鏄惁鍖归厤 im/user
+		! cookie.s ) {
+		// todo 校验 session 是否匹配 im/user
 		res.writeHead(302, {
 			'Location': '/signin.html'
 		});
 		res.end();
 		return;
 	}
+	if ( '/signin.html' === req._parsedUrl.path && cookie.s ) {
+		res.writeHead(302, {
+			'location': '/'
+		});
+		res.end();
+		return;
+	}
 
 	if ( match = req.url.match(/^\/(api|action)\/([^#\?]+)/) ) {
-		if (! cookie.session && ! /^\/(signin|signup)?([?#](.+))?/.test(req.url) ) {
-			// todo 鏍￠獙 session 鏄惁鍖归厤 im/user
+		if (! cookie.s && ! /^\/(signin|signup)?([?#](.+))?/.test(req.url) ) {
+			// todo 校验 session 是否匹配 im/user
 			res.writeHead(302, {
 				'Location': '/signin.html'
 			});

@@ -50,6 +50,7 @@ body {
 	// background-size: cover;
 }
 ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
+.hide {display: none;}
 .clearfix {
 	overflow: hidden;
 }
@@ -216,8 +217,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 		}
 
-		.session-list,
-		.friends-list {
+		.session-list {
 			overflow: auto;
 			font-size: 14px;
 
@@ -225,6 +225,49 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				border-bottom: 1px solid #eee;
 				padding: 14px 10px;
 				color: #666;
+			}
+
+		}
+		.friends-list {
+
+			.addfriends {
+				background-color: #FBFBFB;
+				border-bottom: 1px solid #ddd;
+				.icon.add {
+					display: inline-block;
+					width: 16px;
+					height: 16px;
+					vertical-align: middle;
+					background: url(/img/user-search-icon.png) 0 0 no-repeat;
+				}
+
+				a {
+					margin-left: 6px;
+					text-decoration: none;
+					font-size: 14px;
+					height: 16px;
+					color: #999;
+				}
+			}
+
+			> li {
+				border-bottom: 1px solid #eee;
+				padding: 8px 10px;
+				color: #333;
+			}
+
+			.avatar {
+				float: left;
+				
+				img {
+					width: 32px;
+					height: 32px;
+				}
+			}
+			.title {
+				font-size: 14px;
+				margin-left: 10px;
+				float: left;
 			}
 		}
 }
@@ -412,6 +455,14 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 
 #addfriends-modal {
 
+	.modal-dialog {
+		width: 500px;
+	}
+
+	.btn-default {
+		display: none;
+	}
+
 	.search-box {
 		background-color: #eee;
 		padding: 20px 15px;
@@ -419,7 +470,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			border: 1px solid #06f;
 			padding: 0 10px;
 			height: 34px;
-			width: 360px;
+			width: 380px;
 			float: left;
 			outline: none;
 		}
@@ -441,28 +492,45 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		.friend-item {
 			float: left;
 			display: inline;
-			border: 1px solid #89a;
 			margin: 15px 5px;
-			padding: 10px;
-			width: 100px;
+			width: 160px;
 			text-align: center;
-			cursor: pointer;
+
+			&.active {
+				background: url(/img/tick-icon.png) right top no-repeat;
+			}
 
 			img {
 				width: 64px;
 				height: 64px;
+				float: left;
 			}
-
+			.info {
+				float: left;
+				margin-left: 5px;
+			}
 			p {
+				text-align: left;
 				margin: 0;
 				margin-top: 10px;
 				font-size: 12px;
 
 				.nickname {
-					color: #f33;
+					color: #666;
 				}
 				.gender {
 					color: #069;
+				}
+			}
+
+			.add {
+				background: #0cf;
+				color: #fff;
+				padding: 1px 3px;
+
+				&:disabled {
+					background-color: #999;
+					cursor: default;
 				}
 			}
 		}

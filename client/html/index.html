@@ -6,183 +6,182 @@
 	<link rel="stylesheet" href="/prd/css/im.css">
 </head>
 <body>
-	<div class="container">
-		<div class="main-wrapper"></div>
-		<div class="im-wrapper"> </div>
-	</div>
+	<div class="container" id="app">
+		<div class="main-wrapper">
+			<div class="main">
+				<div class="top-bar">
+					<div class="inner">
+						<div class="avatar-wrapper">
+							<img v-if="avatar" :src="'/img/avatar/'+avatar" alt="{{nickname}}" width="64" height="64">
+						</div>
+						<p class="name-info">{{nickname}}</p>
+					</div>
+				</div>
+				<div class="menu">
+					<ul class="menu-list">
+						<li @click="toggleMenu('session')" class="menu-item active" :class="{active: currentMenu === 'session'}"><button class="menu-bar">会话</button></li>
+						<li @click="toggleMenu('friends')" class="menu-item" :class="{active: currentMenu === 'friends'}"><button class="menu-bar">好友</button></li>
+						<li @click="toggleMenu('setting')" class="menu-item" :class="{active: currentMenu === 'setting'}"><button class="menu-bar">设置</button></li>
+					</ul>
+				</div>
+				<div class="main-body">
+					<div class="panel-group">
+						<div class="panel-body session active" :class="{active: currentMenu === 'session'}">
+							<div class="panel-inner webkitscrollbar">
+								<ul class="session-list">
+									<li  v-if="sessions" v-for="s in sessions"><span class="title">{{s.title}}</span></li>
+									<li v-if="!sessions"><span class="title">暂无会话</span></li>
+								</ul>
+							</div>
+						</div>
+						<div class="panel-body friends" :class="{active: currentMenu === 'friends'}">
+							<div class="panel-inner webkitscrollbar">
+								<ul class="friends-list">
+									<li class="addfriends" @click="showModal('addfriends-modal', '添加好友')">
+										<i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">查找并添加好友</a>
+									</li>
+									<li v-if="friends" class="clearfix" v-for="friend in friends" data-id="{{friend.id}}">
+										<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span><span class="title">{{friend.nickname}}</span>
+									</li>
+									<li v-if="!friends"><span class="title">你还没有增加好友</span></li>
+								</ul>
+							</div>
+						</div>
+						<div class="panel-body setting" :class="{active: currentMenu === 'setting'}">
+							<div class="panel-inner webkitscrollbar list-panel">
+								<ul class="list-group">
+									<li class="list-item">
+										<a href="#setting/nickname"  data-action="setting.nickname" class="list-link">
+											<span class="list-title">昵称</span>
+											<span class="list-detail">{{nickname}}</span>
+										</a>
+									</li>
+									<li class="list-item">
+										<a href="#setting/email" data-action="setting.email" class="list-link">
+											<span class="list-title">帐号(邮箱)</span>
+											<span class="list-detail">{{email}}</span>
+										</a>
+									</li>
+									<li class="list-item">
+										<a href="#setting/gender" class="list-link" data-action="gender">
+											<span class="list-title">性别</span>
+											<span class="list-detail">{{gender | genderFilter}}</span>
+										</a>
+									</li>
+								</ul>
 
-	<div class="modal fade" id="modal-id">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Modal title</h4>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary">确定</button>
+								<ul class="list-group">
+									<li class="list-item">
+										<a href="#setting/about" class="list-link" data-action="about">
+											<span class="list-title">关于</span>
+										</a>
+									</li>
+								</ul>
+
+								<ul class="list-group">
+									<li class="list-item">
+										<a href="#setting/quit" class="list-link" data-action="quit">
+											<span class="list-title">退出</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<script type="text/x-template" id="main-tpl">
-		<div class="main">
-			<div class="top-bar">
-				<div class="inner">
-					<div class="avatar-wrapper">
-						<img src="/img/avatar/{{avatar}}" alt="{{nickname}}" width="64" height="64">
+		<div class="im-wrapper" v-if="show_im">
+			<div class="im">
+				<div class="im-top-bar clearfix">
+					<h5 class="im-hd fl-l">{{to}}</h5>
+					<button class="closer btn-plaint fl-r">&times;</button>
+				</div>
+				
+				<div class="im-bd">
+					<div class="im-bd-left">
+						<div class="im-msg-list-box webkitscrollbar">
+							<ul class="im-msg-list">
+								<li class="im-msg received">
+									<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
+									<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
+								</li>
+								<li class="im-msg sent">
+									<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
+									<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
+								</li>
+							</ul>
+						</div>
+				
+						<div class="im-input-wrapper">
+							<div class="im-input-toolbar">
+								<button class="im-tb emoji btn-plaint">表情</button>
+								<button class="im-tb photo btn-plaint">图片</button>
+							</div>
+				
+							<div class="im-input-box">
+								<div class="im-input-outter">
+									<textarea class="im-input" autofocus="true" maxlength="200"></textarea>
+								</div>
+								<div class="im-input-box-bar clearfix">
+									<button class="im-send-btn fl-r">发送</button>
+								</div>
+							</div>
+						</div>
 					</div>
-					<p class="name-info">{{nickname}}</p>
+				
+					<div class="im-bd-right">af</div>
 				</div>
 			</div>
-			<div class="menu">
-				<ul class="menu-list">
-					<li data-for="session" class="menu-item session active"><button class="menu-bar">会话</button></li>
-					<li data-for="friends" class="menu-item friends"><button class="menu-bar">好友</button></li>
-					<li data-for="setting" class="menu-item setting"><button class="menu-bar">设置</button></li>
-				</ul>
-			</div>
-			<div class="main-body">
-				<div class="panel-group">
-					<div class="panel-body session active">
-						<div class="panel-inner webkitscrollbar">
-							<ul class="session-list">
-							</ul>
-						</div>
-					</div>
-					<div class="panel-body friends">
-						<div class="panel-inner webkitscrollbar">
-							<ul class="friends-list">
-							</ul>
-						</div>
-					</div>
-					<div class="panel-body setting">
-						<div class="panel-inner webkitscrollbar list-panel">
-							<ul class="list-group">
-								<li class="list-item">
-									<a href="#setting/nickname"  data-action="setting.nickname" class="list-link">
-										<span class="list-title">昵称</span>
-										<span class="list-detail">{{nickname}}</span>
-									</a>
-								</li>
-								<li class="list-item">
-									<a href="#setting/email" data-action="setting.email" class="list-link">
-										<span class="list-title">帐号(邮箱)</span>
-										<span class="list-detail">{{email}}</span>
-									</a>
-								</li>
-								<li class="list-item">
-									<a href="#setting/gender" class="list-link" data-action="gender">
-										<span class="list-title">性别</span>
-										<span class="list-detail">{{#genderHelper}}{{gender}}{{/genderHelper}}</span>
-									</a>
-								</li>
-							</ul>
+		</div>
 
-							<ul class="list-group">
-								<li class="list-item">
-									<a href="#setting/about" class="list-link" data-action="about">
-										<span class="list-title">关于</span>
-									</a>
-								</li>
-							</ul>
+		<modal v-if="show_modal"></modal>
+	</div>
 
-							<ul class="list-group">
-								<li class="list-item">
-									<a href="#setting/quit" class="list-link" data-action="quit">
-										<span class="list-title">退出</span>
-									</a>
-								</li>
-							</ul>
-						</div>
+
+
+	<script type="text/x-template" id="modal-tpl">
+		<div class="modal fade active" id="{{id}}">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">{{title}}</h4>
+					</div>
+					<div class="modal-body">
+						<searchfriends></searchfriends>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary">确定</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</script>
-	<script type="text/x-template" id="im-tpl">
-		<div class="im">
-			<div class="im-top-bar clearfix">
-				<h5 class="im-hd fl-l">{{to}}</h5>
-				<button class="closer btn-plaint fl-r">&times;</button>
-			</div>
-			
-			<div class="im-bd">
-				<div class="im-bd-left">
-					<div class="im-msg-list-box webkitscrollbar">
-						<ul class="im-msg-list">
-							<li class="im-msg received">
-								<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
-								<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
-							</li>
-							<li class="im-msg sent">
-								<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
-								<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
-							</li>
-						</ul>
-					</div>
-			
-					<div class="im-input-wrapper">
-						<div class="im-input-toolbar">
-							<button class="im-tb emoji btn-plaint">表情</button>
-							<button class="im-tb photo btn-plaint">图片</button>
-						</div>
-			
-						<div class="im-input-box">
-							<div class="im-input-outter">
-								<textarea class="im-input" autofocus="true" maxlength="200"></textarea>
-							</div>
-							<div class="im-input-box-bar clearfix">
-								<button class="im-send-btn fl-r">发送</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			
-				<div class="im-bd-right">af</div>
-			</div>
-		</div>
-	</script>
-	<script type="text/x-template" id="addfriends-tpl">
-		<form action="#" id="addfriends-form" onsubmit="return false;">
+	<script type="text/x-template" id="searchfriends-tpl">
+		<form action="#" id="addfriends-form" onsubmit="return false;" @submit='searchFriends'>
 			<div class="form-group search-box clearfix">
-				<input type="text" name="friends_info" id="friends_info" placeholder="输入对方邮箱或昵称来查找好友" autocomplete="no" autofocus="autofocus">
+				<input type="text" name="friends_info" id="friends_info" placeholder="输入对方邮箱或昵称来查找好友" autocomplete="no" autofocus="autofocus" v-model="friends_info">
 				<button type="submit">查找</button>
 			</div>
 		</form>
-		<div class="friends-list"></div>
-	</script>
-	<script type="text/x-template" id="search-friends-list-tpl">
-		{{#.}}
-			<div class="friend-item" data-action="addfriends" data-arg="{{email}}">
-				<img src="/img/avatar/{{avatar}}" alt="{{nickname}}">
-				<p>
-					<span class="nickname">{{nickname}}</span>
-					<span class="gender">{{#genderHelper}}{{gender}}{{/genderHelper}}</span>
-				</p>
+		<div class="friends-list">
+			<div v-if="friends" v-for="friend in friends" class="friend-item clearfix" :class="friend.added ? 'active' : ''">
+				<img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}">
+				<div class="info">
+					<p>
+						<span class="nickname">{{friend.nickname}}</span>
+					</p>
+					<p>
+						<span class="gender">{{friend.gender | genderFilter}}</span>
+						<button class="add btn" @click="addFriends(friend.id)" :disabled="friend.added">加为好友</button>
+					</p>
+				</div>
 			</div>
-		{{/.}}
-	</script>
-	<script type="text/x-template" id="session-list-tpl">
-		{{#session}}
-			<li><span class="title">{{title}}</span></li>
-		{{/session}}
-		{{^session}}
-			<li><span class="title">暂无会话</span></li>
-		{{/session}}
-	</script>
-	<script type="text/x-template" id="friends-list-tpl">
-		<li><i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">添加好友</a>	</li>
-		{{#friends}}
-			<li><span class="avatar">{{avatar}}</span><span class="title">{{nickname}}</span></li>
-		{{/friends}}
-		{{^friends}}
-			<li><span class="title">你还没有增加好友</span></li>
-		{{/friends}}
+			<span v-if="friends && friends.length === 0">没有找到相关用户</span>
+		</div>
 	</script>
 	<script src="/js/lib/jquery.js"></script>
 	<script src="/js/im.js"></script>

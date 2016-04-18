@@ -1,55 +1,129 @@
+var Vue = require('./lib/vue.min.js');
+var _ = require('./lib/lodash.js');
 var
-	handlebars = require('./lib/handlebars.js'),
 	getCookie = require('./lib/getCookie.js'),
 	//设置cookie
 	setCookie = require('./lib/setCookie.js'),
 	deleteCookie = require('./lib/deleteCookie.js'),
 	zPad = require('./lib/zeroPadding.js'),
 	getTimeString = require('./lib/getTimeString.js'),
-	boilerplate = require('./lib/boilerplate.js'),
-	log = require('./lib/log.js'),
 	htmlToElement = require('./lib/htmlToElement.js');
-
-handlebars.registerHelper('genderHelper', function (options) {
-	return ['男', '女', '其他'][ +options.fn(this) - 1 ];
-});
 
 var session = getCookie('s');
 var P0 = getCookie('P0');
 var P1 = JSON.parse(decodeURIComponent(getCookie('P1')));
-if (! (session && P0 && P1 && P1.uid) ) {
-	return redirect();
+var uid = P1.uid;
+if (! (session && P0 && P1 && uid) ) {
+	redirect();
 }
-var tplMain = $('#main-tpl').html();
-var tplIm = $('#im-tpl').html();
-var tplSearchFriendList = $('#search-friends-list-tpl').html();
-var $body = $('body');
-var $mainWrapper = $('.main-wrapper');
-var $wrapper = $('.im-wrapper');
-var $modal = $('.modal');
-var $list = $('.im-msg-list', $wrapper);
-var actions = {
-	quit: redirect,
-	showModal: showModal
+
+// app
+Vue.filter('genderFilter', function (value) {
+	return ['男', '女', '其他'][ +value - 1 ];
+});
+var appData = {};
+var getTpl = function (id) {
+	var el = document.getElementById(id);
+	return el ? el.innerHTML : '';
 };
+var searchFriendsComp = Vue.extend({
+	template: getTpl('searchfriends-tpl'),
+	methods: {
+		searchFriends: function () {
+			var that = this;
+			var info = this.friends_info;
+			if (!info) {
+				return;
+			}
+
+			$.ajax({
+					url: '/api/searchFriends',
+					dataType: 'json',
+					data: {info: info, uid: uid}
+			}).done( function (data) {
+				if (!(data && data.success)) {
+					return;
+				}
+				that.$set('friends', data.msg);
+			} );
+		},
+
+		addFriends: function (id) {
+			if (!id) {
+				return;
+			}
+			var that = this;
+			$.ajax({
+				url: '/api/user/addFriends',	
+				dataType: 'json',
+				data: {uid:uid, ids: id}
+			}).done(function (data) {
+				if (data && data.success) {
+					var friends = that.$data.friends;
+					friends = _.map(friends, function (o) {
+						if (o.id == id) {
+							o.added = true;
+						}
+						return _.assign({}, o);
+					});
+					that.$set('friends', friends );
+				}
+			});
+		}
+	}
+});
+
+var modalComp = Vue.extend({
+	template: getTpl('modal-tpl'),
+	components: {
+		'searchfriends': searchFriendsComp
+	},
+	data: function () {
+		return {id: appData.modalID, title: appData.modalTitle};
+	}
+});
+Vue.component('modal', modalComp);
+
+var app = new Vue({
+	el: '#app',
+	data: appData,
+	methods: {
+		redirect: redirect,
+		toggleMenu: function (menu) {
+			this.$set('currentMenu', menu);
+		},
+		showModal: function (id, title) {
+			this.$set('show_modal', true);
+			this.$set('modalID', id);
+			this.$set('modalTitle', title);
+		}
+	}
+});
+
+getUserInfo({uid: uid}).done(function (data) {
+	if ( !(data && data.success) ) {
+		return redirect();
+	}
+
+	var msg = data.msg;
+	app.$set('avatar', msg.avatar);
+	app.$set('nickname', msg.nickname);
+	app.$set('email', msg.email);
+	app.$set('gender', msg.gender);
+	app.$set('currentMenu', 'session');
+
+	getFriends({uid: uid}).done(function (res) {
+		if (res && res.success) {
+			app.$set('friends', res.msg);
+		}
+	});
+});
 function redirect() {
 	deleteCookie('s');
 	deleteCookie('P0');
 	deleteCookie('P1');
 	window.location.href = '/signin.html';
 }
-
-// start biz
-getUserInfo({uid: P1.uid}).done(function (data) {
-	if ( !(data && data.success) ) {
-		return redirect();
-	}
-	$('.main-wrapper').html( handlebars.compile(tplMain)(data.msg) );
-	togglePanel($('.main-wrapper'));
-})
-.done(function () {
-	getFriends({uid: P1.uid}).done(getFriendsHandle);
-});
 function getUserInfo(params) {
 	return $.ajax({
 		url: '/api/user/getUserInfo',
@@ -57,116 +131,6 @@ function getUserInfo(params) {
 		data: params
 	});
 }
-function togglePanel($wrapper) {
-	$wrapper.on('click active', '.menu-item', function(event) {
-		event.preventDefault();
-		var dataFor = $(this).data('for');
-
-		$(this).siblings('.menu-item').removeClass('active');
-		$(this).addClass('active');
-
-		$wrapper
-			.find('.panel-body').removeClass('active')
-			.filter('.'+dataFor).addClass('active');
-	});
-}
-
-// bind UI
-$wrapper.on('click', '.im-send-btn', sendMsgHandler)
-.on('keydown', '.im-input', function(event) {
-	var k = event.which;
-	if (k === 13) {
-		sendMsgHandler();
-	}
-});
-function sendMsgHandler() {
-	var $input = $('.im-input', $wrapper);
-	var msg = $input.val();
-	var msgData = {body: msg, to: 'iahu1988@gmail.com'};
-	if (!msg) {
-		return;
-	}
-	_sentMsg(msgData).done(function (data) {
-		if (data.status == 'ok' && data.success) {
-			$input.val('');
-			msgData.createtime = getTimeString(data.msg.createtime);
-			$list.append(renderMsg(msgData));
-			scrollToBottom($list.parent());
-		} else {
-			log('发送失败');
-		}
-	});
-}
-function _sentMsg(data) {
-	return $.ajax({
-		url: '/api/message/send',
-		dataType: 'jsonp',
-		data: data
-	});
-}
-function renderMsg(data) {
-	var temp = ['<li class="im-msg sent">',
-			'<div class="im-msg-info"><span class="im-msg-title">{{nickname}}</span> <span class="im-msg-ts">{{createtime}}</span> </div>',
-			'<p class="im-msg-bd">{{body}}</p>',
-			'</li>'].join('');
-
-	return boilerplate(temp, data);
-}
-function scrollToBottom($el) {
-	$el.scrollTop( $el[0].scrollHeight );
-}
-
-$body.on('click active', '[data-action]', function(event) {
-	event.preventDefault();
-	var action = $(this).data('action');
-	var arg = ($(this).data('arg') || '').split(/\s?,\s?/);
-
-	if ( actions.hasOwnProperty(action) ) {
-		actions[action].apply(this, arg);
-	}
-});
-$modal
-.on('click', '[data-dismiss]', function(event) {
-	event.preventDefault();
-	// closeModal();
-	var target = $(this).data('dismiss');
-	$(this).closest('.'+target).removeClass('active');
-})
-.on('submit', '#addfriends-form', searchFriendsHandler);
-function showModal(id, title) {
-	title = title || '提示';
-	var tpl = $('#'+ id + '-tpl').html();
-	$('.modal-body', $modal).html( handlebars.compile(tpl, {}) );
-	$('.modal-title', $modal).text(title);
-	return $modal.addClass('active').attr('id', id + '-modal');
-}
-function closeModal() {
-	$modal.removeClass('active');
-}
-function renderSearchFriends(data) {
-	return handlebars.compile(tplSearchFriendList)(data);
-}
-
-function searchFriendsHandler(e) {
-	e.preventDefault();
-	var info = $.trim($(this).find('#friends_info').val());
-	if (!info) {
-		return;
-	}
-
-	searchFriends({info: info}).done( function (data) {
-		$modal.filter('#addfriends-modal').find('.friends-list')
-			.html( renderSearchFriends(data) );
-	} )
-}
-function searchFriends(params) {
-	return $.ajax({
-		url: '/api/searchFriends',
-		dataType: 'json',
-		data: params,
-	});
-}
-
 // getFriends
 function getFriends(data) {
 	return $.ajax({
@@ -174,12 +138,4 @@ function getFriends(data) {
 		dataType: 'json',
 		data: data
 	});
-}
-function renderFriendList(data) {
-	return handlebars.compile($('#friends-list-tpl').html())(data);
-}
-function getFriendsHandle(data) {
-	if (data && data.success) {
-		$('.friends-list', $mainWrapper).html( renderFriendList(data.msg) );
-	}
 }
