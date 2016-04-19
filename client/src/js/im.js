@@ -5,7 +5,6 @@ var
 	//设置cookie
 	setCookie = require('./lib/setCookie.js'),
 	deleteCookie = require('./lib/deleteCookie.js'),
-	zPad = require('./lib/zeroPadding.js'),
 	getTimeString = require('./lib/getTimeString.js'),
 	htmlToElement = require('./lib/htmlToElement.js');
 
@@ -17,17 +16,127 @@ if (! (session && P0 && P1 && uid) ) {
 	redirect();
 }
 
-// app
+
 Vue.filter('genderFilter', function (value) {
 	return ['男', '女', '其他'][ +value - 1 ];
 });
-var appData = {};
-var getTpl = function (id) {
-	var el = document.getElementById(id);
-	return el ? el.innerHTML : '';
+Vue.filter('getTimeString', getTimeString);
+var appData = {
+	show_main: false,
+	show_im: false,
+	show_modal: false,
+	modalData: {}
 };
+var im_main = Vue.extend({
+	template: '#main-tpl',
+	created: function () {
+		var self = this;
+		getUserInfo({uid: uid}).done(function (data) {
+			if ( !(data && data.success) ) {
+				return redirect();
+			}
+
+			self.$data = _.assign({
+				current_menu: 'session',
+				show_main: true,
+				friends: []
+			},data.msg);
+		});
+		getFriends({uid: uid}).done(function (res) {
+			if (res && res.success) {
+				self.friends = res.msg;
+			}
+		});
+	},
+	methods: {
+		toggleMenu: function (menu) {
+			this.current_menu = menu;
+		},
+		dispatchChildEvent: function (name, data) {
+			this.$dispatch( 'eventFromChild', name, data);
+		},
+		quit: function () {
+			deleteCookie('s');
+			deleteCookie('P0');
+			deleteCookie('P1');
+
+			redirect();
+		}
+	}
+});
+function _sentMsg(data) {
+	return $.ajax({
+		url: '/api/message/send',
+		type: 'POST',
+		dataType: 'jsonp',
+		data: data
+	});
+}
+var im_dialog = Vue.extend({
+	template: '#im-tpl',
+	data: function () {
+		return {
+			id: '',
+			nickname: '',
+			visibility: false,
+			msgList: {}
+		};
+	},
+	methods: {
+		send: function () {
+			
+		},
+		show: function () {
+			this.visibility = true;
+		},
+		hide: function () {
+			this.visibility = false;
+		},
+		send: function (event) {
+			var self = this,
+				id = this.id,
+				msgData;
+
+			if (event.type === 'keyup' && !event.ctrlKey) {
+				return false;
+			}
+
+			if (!this.msg) {
+				return false;
+			}
+			msgData = {body: this.msg,
+				to: id,
+				uid: uid
+			};
+			_sentMsg(msgData).done(function (data) {
+				if (data.status == 'ok' && data.success) {
+					self.msg = '';
+					msgData.type = 'sent';
+					msgData.createtime = data.msg.createtime;
+					var msgList = _.assign({}, self.msgList);
+					if ( ! msgList[id] ) {
+						msgList[id] = [];
+					}
+					msgList[id].push(msgData);
+					self.$set('msgList', msgList );
+				} else {
+					console.log('发送失败');
+				}
+			});
+		}
+	},
+	events: {
+		openMsgDialog: function (data) {
+			this.id = data.id;
+			this.nickname = data.nickname;
+			this.show(); 
+		}
+	}
+});
+
+// modal
 var searchFriendsComp = Vue.extend({
-	template: getTpl('searchfriends-tpl'),
+	template: '#searchfriends-tpl',
 	methods: {
 		searchFriends: function () {
 			var that = this;
@@ -73,51 +182,57 @@ var searchFriendsComp = Vue.extend({
 	}
 });
 
-var modalComp = Vue.extend({
-	template: getTpl('modal-tpl'),
+var im_modal = Vue.extend({
+	template: '#modal-tpl',
+	props: ['arg'],
+	data: function () {
+		return {
+			visibility: false,
+			id: '',
+			title: '',
+			modalBody: ''
+		};
+	},
 	components: {
 		'searchfriends': searchFriendsComp
 	},
-	data: function () {
-		return {id: appData.modalID, title: appData.modalTitle};
+	methods: {
+		hide: function () {
+			this.visibility = false;
+			this.modalBody = '';
+		},
+		show: function () {
+			this.visibility = true;
+		}
+	},
+	events: {
+		showModal: function (data) {
+			this.id = data.id;
+			this.title = data.title;
+			this.modalBody = data.modalBody;
+			this.show();
+		}
 	}
 });
-Vue.component('modal', modalComp);
 
-var app = new Vue({
-	el: '#app',
+Vue.component('im-modal', im_modal);
+Vue.component('im-main', im_main);
+Vue.component('im-dialog', im_dialog);
+
+var im = new Vue({
+	el: '#im',
 	data: appData,
 	methods: {
-		redirect: redirect,
-		toggleMenu: function (menu) {
-			this.$set('currentMenu', menu);
-		},
-		showModal: function (id, title) {
-			this.$set('show_modal', true);
-			this.$set('modalID', id);
-			this.$set('modalTitle', title);
+		redirect: redirect
+	},
+	events: {
+		eventFromChild : function (name, data) {
+			this.$broadcast(name, data);
 		}
 	}
 });
 
-getUserInfo({uid: uid}).done(function (data) {
-	if ( !(data && data.success) ) {
-		return redirect();
-	}
 
-	var msg = data.msg;
-	app.$set('avatar', msg.avatar);
-	app.$set('nickname', msg.nickname);
-	app.$set('email', msg.email);
-	app.$set('gender', msg.gender);
-	app.$set('currentMenu', 'session');
-
-	getFriends({uid: uid}).done(function (res) {
-		if (res && res.success) {
-			app.$set('friends', res.msg);
-		}
-	});
-});
 function redirect() {
 	deleteCookie('s');
 	deleteCookie('P0');

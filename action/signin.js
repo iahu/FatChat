@@ -20,7 +20,7 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: msg});
 	}
 
-	db.query('SELECT id,email, nickname, avatar FROM users WHERE email='+
+	db.query('SELECT id,email, nickname, FROM users WHERE email='+
 		db.escape(params.email) + ' AND password=' +
 		db.escape( md5(params.password) )  +' LIMIT 1', function (err, body) {
 		if (err) {
@@ -38,7 +38,7 @@ module.exports = function (req, res, next) {
 					'Set-Cookie': [
 						's=' + session.id + '; path=/; ',
 						'P0=' + session.key + '; path=/; ',
-						'P1='+ encodeURIComponent(JSON.stringify({avatar: body.avatar,
+						'P1='+ encodeURIComponent(JSON.stringify({
 							email: body.email,
 							uid: body.id,
 							nickname: body.nickname})) + '; path=/;'

@@ -6,8 +6,15 @@
 	<link rel="stylesheet" href="/prd/css/im.css">
 </head>
 <body>
-	<div class="container" id="app">
-		<div class="main-wrapper">
+	<div class="container" id="im">
+		<im-main v-on:show-modal="showModal" v-on:event-from-child="eventFromChild"></im-main>
+		<im-dialog></im-dialog>
+		<im-modal :arg="modalData"></im-modal>
+	</div>
+
+
+	<script type="text/x-template" id="main-tpl">
+		<div class="main-wrapper" v-if="show_main">
 			<div class="main">
 				<div class="top-bar">
 					<div class="inner">
@@ -19,14 +26,14 @@
 				</div>
 				<div class="menu">
 					<ul class="menu-list">
-						<li @click="toggleMenu('session')" class="menu-item active" :class="{active: currentMenu === 'session'}"><button class="menu-bar">会话</button></li>
-						<li @click="toggleMenu('friends')" class="menu-item" :class="{active: currentMenu === 'friends'}"><button class="menu-bar">好友</button></li>
-						<li @click="toggleMenu('setting')" class="menu-item" :class="{active: currentMenu === 'setting'}"><button class="menu-bar">设置</button></li>
+						<li @click="toggleMenu('session')" class="menu-item" :class="{active: current_menu === 'session'}"><button class="menu-bar">会话</button></li>
+						<li @click="toggleMenu('friends')" class="menu-item" :class="{active: current_menu === 'friends'}"><button class="menu-bar">好友</button></li>
+						<li @click="toggleMenu('setting')" class="menu-item" :class="{active: current_menu === 'setting'}"><button class="menu-bar">设置</button></li>
 					</ul>
 				</div>
 				<div class="main-body">
 					<div class="panel-group">
-						<div class="panel-body session active" :class="{active: currentMenu === 'session'}">
+						<div class="panel-body session" v-show="current_menu === 'session'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar">
 								<ul class="session-list">
 									<li  v-if="sessions" v-for="s in sessions"><span class="title">{{s.title}}</span></li>
@@ -34,20 +41,22 @@
 								</ul>
 							</div>
 						</div>
-						<div class="panel-body friends" :class="{active: currentMenu === 'friends'}">
+
+						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar">
 								<ul class="friends-list">
-									<li class="addfriends" @click="showModal('addfriends-modal', '添加好友')">
+									<li class="addfriends" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
 										<i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">查找并添加好友</a>
 									</li>
-									<li v-if="friends" class="clearfix" v-for="friend in friends" data-id="{{friend.id}}">
+									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', friend)">
 										<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span><span class="title">{{friend.nickname}}</span>
 									</li>
 									<li v-if="!friends"><span class="title">你还没有增加好友</span></li>
 								</ul>
 							</div>
 						</div>
-						<div class="panel-body setting" :class="{active: currentMenu === 'setting'}">
+
+						<div class="panel-body setting" v-show="current_menu === 'setting'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar list-panel">
 								<ul class="list-group">
 									<li class="list-item">
@@ -80,7 +89,7 @@
 
 								<ul class="list-group">
 									<li class="list-item">
-										<a href="#setting/quit" class="list-link" data-action="quit">
+										<a href="#setting/quit" class="list-link" @click="quit">
 											<span class="list-title">退出</span>
 										</a>
 									</li>
@@ -91,25 +100,22 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="im-wrapper" v-if="show_im">
+	</script>
+	<script type="text/x-teplate" id="im-tpl">
+		<div class="im-wrapper" v-show="visibility">
 			<div class="im">
 				<div class="im-top-bar clearfix">
-					<h5 class="im-hd fl-l">{{to}}</h5>
-					<button class="closer btn-plaint fl-r">&times;</button>
+					<h5 class="im-hd fl-l" data-id="{{id}}">{{nickname}}</h5>
+					<button class="closer btn-plaint fl-r" @click="hide">&times;</button>
 				</div>
 				
 				<div class="im-bd">
 					<div class="im-bd-left">
 						<div class="im-msg-list-box webkitscrollbar">
-							<ul class="im-msg-list">
-								<li class="im-msg received">
-									<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
-									<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
-								</li>
-								<li class="im-msg sent">
-									<div class="im-msg-info"><span class="im-msg-title">系统消息</span> <span class="im-msg-ts">2016-04-07 16:21:49</span> </div>
-									<p class="im-msg-bd">您好，欢迎您咨询 空港新城</p>
+							<ul class="im-msg-list" v-if="msgList[id].length" v-for="msg in msgList[id]">
+								<li class="im-msg" :class="msg.type">
+									<div class="im-msg-info"><span class="im-msg-title">{{msg.title}}</span> <span class="im-msg-ts">{{msg.createtime | getTimeString}}</span> </div>
+									<p class="im-msg-bd">{{msg.body}}</p>
 								</li>
 							</ul>
 						</div>
@@ -122,10 +128,10 @@
 				
 							<div class="im-input-box">
 								<div class="im-input-outter">
-									<textarea class="im-input" autofocus="true" maxlength="200"></textarea>
+									<textarea class="im-input" autofocus="true" maxlength="200" v-model="msg" @keyup.enter="send"></textarea>
 								</div>
 								<div class="im-input-box-bar clearfix">
-									<button class="im-send-btn fl-r">发送</button>
+									<button class="im-send-btn fl-r" @click="send">发送</button>
 								</div>
 							</div>
 						</div>
@@ -135,26 +141,21 @@
 				</div>
 			</div>
 		</div>
-
-		<modal v-if="show_modal"></modal>
-	</div>
-
-
-
+	</script>
 	<script type="text/x-template" id="modal-tpl">
-		<div class="modal fade active" id="{{id}}">
+		<div class="modal" v-show="visibility" :id="id" transition="fade" v-on:modal-show="show">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<button type="button" class="close" aria-hidden="true" @click="hide">&times;</button>
 						<h4 class="modal-title">{{title}}</h4>
 					</div>
-					<div class="modal-body">
-						<searchfriends></searchfriends>
+					<div class="modal-body" :is="modalBody">
+
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-						<button type="button" class="btn btn-primary">确定</button>
+						<button type="button" class="btn btn-default"  @click="hide">取消</button>
+						<button type="button" class="btn btn-primary" @click="hide">确定</button>
 					</div>
 				</div>
 			</div>

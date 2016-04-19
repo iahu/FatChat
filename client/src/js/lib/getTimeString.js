@@ -1,5 +1,6 @@
 module.exports = function(ts) {
     var date = new Date( ts );
+    var zPad = require('./zeroPadding.js');
     var now = '';
     if ( date.toString() === 'Invalid Date' ) {
     	date = new Date();

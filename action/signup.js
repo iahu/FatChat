@@ -64,7 +64,7 @@ module.exports = function (req, res, next) {
 					'Set-Cookie': [
 						's=' + session.id + '; path=/; ',
 						'P0='+ session.key + '; path=/; ',
-						'P1='+ encodeURIComponent(JSON.stringify({avatar: avatar,
+						'P1='+ encodeURIComponent(JSON.stringify({
 							email: insertData.email,
 							uid: body.id,
 							nickname: insertData.nickname})) + '; path=/',
