@@ -20,10 +20,11 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: msg});
 	}
 
-	db.query('SELECT id,email, nickname, FROM users WHERE email='+
+	db.query('SELECT id, email, nickname FROM users WHERE email='+
 		db.escape(params.email) + ' AND password=' +
 		db.escape( md5(params.password) )  +' LIMIT 1', function (err, body) {
 		if (err) {
+			console.log(err);
 			res.writeHead(302, {
 				'Location': '/sigin.html',
 				'Set-Cookie': 'signin=1; Max-Age=3; path=/'

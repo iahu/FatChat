@@ -36,7 +36,7 @@
 						<div class="panel-body session" v-show="current_menu === 'session'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar">
 								<ul class="session-list">
-									<li  v-if="sessions" v-for="s in sessions"><span class="title">{{s.title}}</span></li>
+									<li v-if="sessions.length" v-for="s in sessions"><span class="title">{{s.title}}</span></li>
 									<li v-if="!sessions"><span class="title">暂无会话</span></li>
 								</ul>
 							</div>
@@ -48,7 +48,7 @@
 									<li class="addfriends" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
 										<i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">查找并添加好友</a>
 									</li>
-									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', friend)">
+									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', friend)" @click="toggleClass('active')">
 										<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span><span class="title">{{friend.nickname}}</span>
 									</li>
 									<li v-if="!friends"><span class="title">你还没有增加好友</span></li>
@@ -184,7 +184,6 @@
 			<span v-if="friends && friends.length === 0">没有找到相关用户</span>
 		</div>
 	</script>
-	<script src="/js/lib/jquery.js"></script>
 	<script src="/js/im.js"></script>
 </body>
 </html>

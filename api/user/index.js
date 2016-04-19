@@ -3,5 +3,6 @@ module.exports = {
 	sigin: require('./sigin'),
 	sigout: require('./sigout'),
 	addFriends: require('./addFriends'),
-	getFriends: require('./getFriends')
+	getFriends: require('./getFriends'),
+	getSessions: require('./getSessions')
 };

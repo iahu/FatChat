@@ -31,6 +31,7 @@ function routes(req, res, next) {
 
 	cookie = querystring.parse(req.headers.cookie, '; ');
 	req.cookie = cookie;
+	req.params = querystring.parse(req._parsedUrl.query);
 
 	// rewrite
 	req.rewrite(/^\/([\?#](.+))?$/, '/index.html$1');
