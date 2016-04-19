@@ -1,6 +1,6 @@
 var Vue = require('./lib/vue.min.js'),
 	_ = require('./lib/lodash.js'),
-	vueResource = require('./lib/vue-resource/index.js'),
+	vueResource = require('./lib/vue-resource.min.js'),
 
 	getCookie = require('./lib/getCookie.js'),
 	//设置cookie
