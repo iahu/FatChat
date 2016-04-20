@@ -24,7 +24,6 @@ module.exports = function (req, res, next) {
 		db.escape(params.email) + ' AND password=' +
 		db.escape( md5(params.password) )  +' LIMIT 1', function (err, body) {
 		if (err) {
-			console.log(err);
 			res.writeHead(302, {
 				'Location': '/sigin.html',
 				'Set-Cookie': 'signin=1; Max-Age=3; path=/'

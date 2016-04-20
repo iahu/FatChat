@@ -1,12 +1,19 @@
 var Vue = require('../lib/vue.min.js');
+var getP1 = require('../lib/getP1.js');
+var uid = getP1().uid;
+
+function scrollToBottom(el) {
+	el.scrollTop = el.scrollHeight;
+}
+
 module.exports = Vue.extend({
 	template: '#im-tpl',
+	props: ['maxsize'],
 	data: function () {
 		return {
-			id: '',
-			nickname: '',
+			userInfo: {},
 			visibility: false,
-			msgList: {}
+			msgList: []
 		};
 	},
 	methods: {
@@ -15,28 +22,29 @@ module.exports = Vue.extend({
 		},
 		show: function () {
 			this.visibility = true;
+			this.$nextTick(function () {
+				scrollToBottom( document.getElementById('ps') );
+			});
 		},
 		hide: function () {
 			this.visibility = false;
 		},
 		send: function (event) {
 			var self = this,
-				id = this.id,
+				u = self.userInfo,
+				id = u.target,
 				msgData;
 
-			if (event.type === 'keyup' && !event.ctrlKey) {
+			if (event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
 				return false;
 			}
 
 			if (!this.msg) {
 				return false;
 			}
-			msgData = {body: this.msg,
-				to: id,
-				uid: uid
-			};
+			msgData = {body: this.msg, to: id, from: uid };
 			this.$http({
-				url: '/api/user/send',
+				url: '/api/message/send',
 				dataType: 'json',
 				method: 'POST',
 				data: msgData
@@ -44,14 +52,20 @@ module.exports = Vue.extend({
 				data = data.data;
 				if (data.status == 'ok' && data.success) {
 					self.msg = '';
-					msgData.type = 'sent';
+
 					msgData.createtime = data.msg.createtime;
-					var msgList = _.assign({}, self.msgList);
-					if ( ! msgList[id] ) {
-						msgList[id] = [];
+					msgData.target = this.userInfo.target;
+					msgData.avatar = this.userInfo.avatar;
+					msgData.nickname = this.userInfo.nickname;
+					self.msgList.push(msgData);
+					self.$dispatch('eventFromChild', 'updateSession', msgData);
+
+					self.$nextTick(function() {
+						scrollToBottom( document.getElementById('ps') );
+					});
+					if ( self.msgList.length > this.maxsize ) {
+						self.msgList = self.msgList.slice(0, this.maxsize);
 					}
-					msgList[id].push(msgData);
-					self.$set('msgList', msgList );
 				} else {
 					console.log('发送失败');
 				}
@@ -59,9 +73,17 @@ module.exports = Vue.extend({
 		}
 	},
 	events: {
-		openMsgDialog: function (data) {
-			this.id = data.id;
-			this.nickname = data.nickname;
+		openMsgDialog: function (userInfo) {
+			var u = userInfo.u;
+			this.userInfo = u;
+
+			if ( userInfo.m ) {
+				this.msgList = userInfo.m;
+				if ( this.msgList.length > this.maxsize ) {
+					this.msgList = this.msgList.slice(0, this.maxsize);
+				}
+			}
+			
 			this.show(); 
 		}
 	}

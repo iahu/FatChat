@@ -4,9 +4,9 @@ module.exports = function (req, res, next) {
 	var cookie = req.cookie;
 	var querystring = require('querystring');
 	var params = req.body;
-	var uid = params.uid;
+	var uid = params.from;
 	var msgBody = params.body;
-	var friend_id = params.to;
+	var to = params.to;
 
 	if ( makeSessionID(uid, cookie.P0).id !== cookie.s ) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail'});
@@ -14,24 +14,22 @@ module.exports = function (req, res, next) {
 	if (!msgBody) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'msg body is empty'});
 	}
-	if (friend_id === uid) {
+	if (to === uid) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'can\'t send msg to youself.'});
 	}
 
-	db.query('SELECT user_id, friend_id FROM `friendship` WHERE user_id=' + db.escape(uid) + ' AND friend_id=' + db.escape(friend_id) , function (err, body) {
+	db.query('SELECT `user_id`, `friend_id` FROM `friendship` WHERE `user_id`=' + db.escape(uid) + ' AND `friend_id`=' + db.escape(to) , function (err, body) {
 		var id, msgData;
 		if (err) {
 			return res.responseJSONP({status: 'ok', success: false, msg: err.message});
 		} else {
 			if (body && body.length == 1) {
-				id = [uid, friend_id].sort().join('@');
 
 				msgData = {
-					user_id: +uid,
-					friend_id: +params.to,
+					'`from`': +uid,
+					'`to`': +params.to,
 					body: msgBody,
-					createtime: +new Date(),
-					sessionId: id
+					createtime: +new Date()
 				};
 
 				db.insert(msgData, 'sessions', function (err, body) {

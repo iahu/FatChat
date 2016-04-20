@@ -1,5 +1,4 @@
 var Vue = require('./lib/vue.min.js'),
-	_ = require('./lib/lodash.js'),
 	vueResource = require('./lib/vue-resource.min.js'),
 
 	getCookie = require('./lib/getCookie.js'),
@@ -19,11 +18,22 @@ if (! (session && P0 && P1 && uid) ) {
 	redirect();
 }
 
+Array.prototype.last = Array.prototype.last = function () {
+	return _.last(this);
+};
+
 Vue.use(vueResource);
 Vue.filter('genderFilter', function (value) {
 	return ['男', '女', '其他'][ +value - 1 ];
 });
 Vue.filter('getTimeString', getTimeString);
+Vue.filter('getDateString', function (s) {
+	var d = new Date(+s);
+	return [ d.getMonth()+1, d.getDate() ].join('-');
+});
+Vue.filter('msgTypeFilter', function(id) {
+	return +id === +uid ? 'sent' : 'received';
+});
 
 Vue.component('im-modal', require('./components/modal.js'));
 Vue.component('im-main', require('./components/main.js'));

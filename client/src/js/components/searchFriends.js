@@ -30,11 +30,12 @@ module.exports = Vue.extend({
 				return;
 			}
 			var that = this;
-			$.ajax({
+			this.$http({
 				url: '/api/user/addFriends',	
 				dataType: 'json',
 				data: {uid:uid, ids: id}
-			}).done(function (data) {
+			}).then(function (data) {
+				data = data.data;
 				if (data && data.success) {
 					var friends = that.$data.friends;
 					friends = _.map(friends, function (o) {
