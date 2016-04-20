@@ -11,7 +11,8 @@ module.exports = Vue.extend({
 	props: ['maxsize'],
 	data: function () {
 		return {
-			userInfo: {},
+			fromUser: {},
+			toUser: {},
 			visibility: false,
 			msgList: []
 		};
@@ -31,8 +32,8 @@ module.exports = Vue.extend({
 		},
 		send: function (event) {
 			var self = this,
-				u = self.userInfo,
-				id = u.target,
+				u = self.toUser,
+				id = u.to,
 				msgData;
 
 			if (event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
@@ -48,42 +49,42 @@ module.exports = Vue.extend({
 				dataType: 'json',
 				method: 'POST',
 				data: msgData
-			}).then(function (data) {
-				data = data.data;
-				if (data.status == 'ok' && data.success) {
-					self.msg = '';
+			}).then(this._afterSend);
+		},
+		_afterSend: function (data) {
+			var msgData = {body: this.msg, to: this.toUser.to, from: uid };
+			data = data.data;
+			if (data.status == 'ok' && data.success) {
+				this.msg = '';
 
-					msgData.createtime = data.msg.createtime;
-					msgData.target = this.userInfo.target;
-					msgData.avatar = this.userInfo.avatar;
-					msgData.nickname = this.userInfo.nickname;
-					self.msgList.push(msgData);
-					self.$dispatch('eventFromChild', 'updateSession', msgData);
+				msgData.createtime = data.msg.createtime;
+				msgData.toUser = this.toUser;
+				msgData.fromUser = this.fromUser;
+				this.msgList.push(msgData);
+				this.$dispatch('eventFromChild', 'updateSession', msgData);
 
-					self.$nextTick(function() {
-						scrollToBottom( document.getElementById('ps') );
-					});
-					if ( self.msgList.length > this.maxsize ) {
-						self.msgList = self.msgList.slice(0, this.maxsize);
-					}
-				} else {
-					console.log('发送失败');
+				this.$nextTick(function() {
+					scrollToBottom( document.getElementById('ps') );
+				});
+				if ( this.msgList.length > this.maxsize ) {
+					this.msgList = this.msgList.slice( 1 - this.maxsize);
 				}
-			});
+			} else {
+				console.log('发送失败');
+			}
 		}
 	},
 	events: {
-		openMsgDialog: function (userInfo) {
-			var u = userInfo.u;
-			this.userInfo = u;
+		openMsgDialog: function (data) {
+			this.toUser = data.t;
+			this.fromUser = data.f;
 
-			if ( userInfo.m ) {
-				this.msgList = userInfo.m;
+			if ( data.m ) {
+				this.msgList = data.m;
 				if ( this.msgList.length > this.maxsize ) {
-					this.msgList = this.msgList.slice(0, this.maxsize);
+					this.msgList = this.msgList.slice(1 - this.maxsize);
 				}
 			}
-			
 			this.show(); 
 		}
 	}

@@ -19,68 +19,31 @@ module.exports = Vue.extend({
 	},
 	ready: function () {
 		var self = this;
-		this.$http({
-			url: '/api/user/getUserInfo',
-			dataType: 'json',
-			data: {uid: uid}
-		})
-		.then(function (data) {
-			data = data.data;
-			if ( !(data && data.success) ) {
-				// return redirect();
-				return;
-			}
-
-			self.$data = _.assign({
-				current_menu: 'session',
-				show_main: true,
-				friends: {}
-			},data.msg);
-		});
-		
-		this.$http({
-			url: '/api/user/getFriends',
-			method: 'get',
-			dataType: 'json',
-			data: {uid: uid}
-		})
-		.then(function (res) {
-			res = res.data;
-			if (res && res.success) {
-				self.friends = _.keyBy(res.msg, function (o) {
-					return o.id;
-				});
-			}
-		});
-
-		this.$http({
-			url: '/api/user/getSessions',
-			method: 'get',
-			dataType: 'json',
-			data: {uid: uid}
-		})
-		.then(function(res) {
-			var data = res.data;
-			if (data && !data.errno) {
-				self.$set('msgList', data );
-			} else {
-				self.$set('msgList', []);
-			}
-		});
+		this.getUserInfoData();
+		this.getFriendsData();
+		this.getSessionsData();
 	},
 	computed: {
 		sessions: function () {
 			var fData = this.friends;
+			var self = this;
+
 			var data = _.map(this.msgList, function (o) {
-				var d = uid === o.from ? fData[ o.to ] : fData[o.from];
+				var t, f;
+				var userInfo = {avatar: self.avatar, nickname: self.nickname, id: uid};
+				if ( uid == o.from ) {
+					t = fData[o.to];
+				} else {
+					t = fData[o.to];
+				}
+
 				return {
-					avatar: d.avatar,
-					nickname: d.nickname,
-					body: o.body,
-					createtime: o.createtime,
 					from: o.from,
 					to: o.to,
-					target: d.id
+					body: o.body,
+					toUser: fData[o.to] || userInfo,
+					fromUser: fData[o.from] || userInfo,
+					createtime: o.createtime
 				};
 			});
 
@@ -91,14 +54,76 @@ module.exports = Vue.extend({
 
 		lastMsgList: function () {
 			var data = _.map(this.sessions, function (o, key) {
-				o.id = key;
-				return o.last();
+				
+				var last = o.last();
+				var data = (uid === last.from) ? last.toUser : last.fromUser;
+
+				return {
+					to: data.id,
+					nickname: data.nickname,
+					avatar: data.avatar,
+					createtime: last.createtime,
+					body: last.body
+				};
 			});
 
 			return _.orderBy(data, 'createtime', 'desc');
 		}
 	},
 	methods: {
+		getUserInfoData: function () {
+			return this.$http({
+				url: '/api/user/getUserInfo',
+				dataType: 'json',
+				data: {uid: uid}
+			})
+			.then(function (data) {
+				data = data.data;
+				if ( !(data && data.success) ) {
+					// return redirect();
+					return;
+				}
+
+				this.$data = _.assign({
+					current_menu: 'session',
+					show_main: true,
+					friends: {},
+					userInfo: data.msg
+				});
+			});
+		},
+		getFriendsData: function () {
+			return this.$http({
+				url: '/api/user/getFriends',
+				method: 'get',
+				dataType: 'json',
+				data: {uid: uid}
+			})
+			.then(function (res) {
+				res = res.data;
+				if (res && res.success) {
+					this.friends = _.keyBy(res.msg, function (o) {
+						return o.id;
+					});
+				}
+			});
+		},
+		getSessionsData: function () {
+			return this.$http({
+				url: '/api/user/getSessions',
+				method: 'get',
+				dataType: 'json',
+				data: {uid: uid}
+			})
+			.then(function(res) {
+				var data = res.data;
+				if (data && !data.errno) {
+					this.$set('msgList', data );
+				} else {
+					this.$set('msgList', []);
+				}
+			});
+		},
 		toggleMenu: function (menu) {
 			this.current_menu = menu;
 		},
@@ -128,6 +153,9 @@ module.exports = Vue.extend({
 
 		getSessionData: function (u) {
 			return this.sessions[ this.getToId(u) ];
+		},
+		test: function () {
+			console.log('test');
 		}
 	},
 	events: {

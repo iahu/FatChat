@@ -8,7 +8,7 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail or bad arguments'});
 	}
 
-	db.query('SELECT email, nickname, avatar, gender FROM users WHERE id='+ db.escape(params.uid) + ' LIMIT 1', function (err, body) {
+	db.query('SELECT id, email, nickname, avatar, gender FROM users WHERE id='+ db.escape(params.uid) + ' LIMIT 1', function (err, body) {
 		if (!body) {
 			return res.responseJSONP({status: 'ok', success: false, msg: 'user not found.'});
 		}

@@ -19,9 +19,9 @@
 				<div class="top-bar">
 					<div class="inner clearfix">
 						<div class="avatar-wrapper">
-							<img v-if="avatar" :src="'/img/avatar/'+avatar" alt="{{nickname}}" width="64" height="64">
+							<img v-if="userInfo.avatar" :src="'/img/avatar/'+userInfo.avatar" alt="{{userInfo.nickname}}" width="64" height="64">
 						</div>
-						<p class="name-info">{{nickname}}</p>
+						<p class="name-info">{{userInfo.nickname}}</p>
 					</div>
 
 					<div class="addfriends" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
@@ -40,7 +40,7 @@
 						<div class="panel-body session" v-show="current_menu === 'session'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'sessions')">
 								<ul class="session-list">
-									<li v-for="s in lastMsgList" class="clearfix" :class="{active: sessionsActiveID == $index}" @dblclick="dispatchChildEvent('openMsgDialog', {u: s, m: sessions[ s.target ] })" @click.stop="toggleClass($index, 'sessions')">
+									<li v-for="s in lastMsgList" class="clearfix" :class="{active: sessionsActiveID == $index}" @dblclick="dispatchChildEvent('openMsgDialog', {f: userInfo, t: s, m: sessions[ s.to ] })" @click.stop="toggleClass($index, 'sessions')">
 										<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
 										<div class="text">
 											<div>
@@ -58,7 +58,7 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', {u: friend, m: sessions[ s.target ] })" :class="{active: friendsActiveID == $index}" @click.stop="toggleClass($index, 'friends')">
+									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', {f: userInfo, t: friend, m: sessions[ s.to ] })" :class="{active: friendsActiveID == $index}" @click.stop="toggleClass($index, 'friends')">
 										<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 										<div class="text">
 											<span class="title">{{friend.nickname}}</span>
@@ -75,19 +75,19 @@
 									<li class="list-item">
 										<a href="#setting/nickname"  data-action="setting.nickname" class="list-link">
 											<span class="list-title">昵称</span>
-											<span class="list-detail">{{nickname}}</span>
+											<span class="list-detail">{{userInfo.nickname}}</span>
 										</a>
 									</li>
 									<li class="list-item">
 										<a href="#setting/email" data-action="setting.email" class="list-link">
 											<span class="list-title">帐号(邮箱)</span>
-											<span class="list-detail">{{email}}</span>
+											<span class="list-detail">{{userInfo.email}}</span>
 										</a>
 									</li>
 									<li class="list-item">
 										<a href="#setting/gender" class="list-link" data-action="gender">
 											<span class="list-title">性别</span>
-											<span class="list-detail">{{gender | genderFilter}}</span>
+											<span class="list-detail">{{userInfo.gender | genderFilter}}</span>
 										</a>
 									</li>
 								</ul>
@@ -118,8 +118,8 @@
 		<div class="im-wrapper" v-show="visibility">
 			<div class="im">
 				<div class="im-top-bar clearfix">
-					<span class="avatar fl-l"><img v-if="userInfo.avatar" :src="'/img/avatar/' + userInfo.avatar" alt="{{userInfo.nickname}}"></span>
-					<h5 class="im-hd fl-l">{{userInfo.nickname}}</h5>
+					<span class="avatar fl-l"><img v-if="toUser.avatar" :src="'/img/avatar/' + toUser.avatar" alt="{{toUser.nickname}}"></span>
+					<h5 class="im-hd fl-l">{{toUser.nickname}}</h5>
 					<button class="closer btn-plaint fl-r" @click="hide">&times;</button>
 				</div>
 				
@@ -127,15 +127,33 @@
 					<div class="im-bd-left">
 						<div class="im-msg-list-box webkitscrollbar" id="ps">
 							<ul class="im-msg-list clearfix" v-if="msgList.length">
-								<li class="top-tips" v-if="msgList.length > maxsize-1"> <span class="tip-body">默认最多显示{{maxsize}}条历史消息</span> </li>
+								<li class="top-tips" v-if="msgList.length >= maxsize-1">
+									<span class="tip-body">默认最多显示{{maxsize}}条历史消息</span>
+								</li>
 								<li class="im-msg clearfix" v-for="msg in msgList" :class="msg.from | msgTypeFilter">
-									<div class="im-msg-info"><span class="im-msg-title">{{msg.nickname}}</span> <span class="im-msg-ts">{{msg.createtime | getTimeString}}</span> </div>
-									<div class="im-msg-content">
-										<div class="avatar">
-											<img :src="'img/avatar/'+ msg.avatar" alt="{{msg.nickname}}">
+									<!-- msg from user -->
+									<template v-if="msg.from === fromUser.id">
+										<div class="im-msg-info">
+											<span class="im-msg-title">{{fromUser.nickname}}</span> <span class="im-msg-ts">{{msg.createtime | getTimeString}}</span>
 										</div>
-										<p class="im-msg-bd">{{msg.body}}</p>
-									</div>
+										<div class="im-msg-content">
+											<div class="avatar">
+												<img :src="'img/avatar/'+ fromUser.avatar" alt="{{fromUser.nickname}}">
+											</div>
+											<p class="im-msg-bd">{{msg.body}}</p>
+										</div>
+									</template>
+									<template v-else>
+										<div class="im-msg-info">
+											<span class="im-msg-title">{{toUser.nickname}}</span> <span class="im-msg-ts">{{msg.createtime | getTimeString}}</span>
+										</div>
+										<div class="im-msg-content">
+											<div class="avatar">
+												<img :src="'img/avatar/'+ toUser.avatar" alt="{{toUser.nickname}}">
+											</div>
+											<p class="im-msg-bd">{{msg.body}}</p>
+										</div>
+									</template>
 								</li>
 							</ul>
 						</div>
