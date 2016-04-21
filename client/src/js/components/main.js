@@ -11,17 +11,25 @@ module.exports = Vue.extend({
 	data: function () {
 		return {
 			uid: uid,
-			sessionsActiveID: '',
-			friendsActiveID: '',
-			msgList: [],
-			dataReady: false
+			sessionsActiveID: -1,
+			friendsActiveID: -1,
+			current_menu: 'session',
+			friends: '',
+			msgList: '',
+			userInfo: '',
+			msgList: '',
+			show_main: false,
+			show_friends: false,
+			mutualFriendsCount: 0,
+			polling: false,
+			talkingWith: 0,
+			pollTime: 4000,
+			noMsg: true
 		};
 	},
 	ready: function () {
-		var self = this;
-		this.getUserInfoData();
-		this.getFriendsData();
-		this.getSessionsData();
+		this.getUserInfoData().then(this.poll);
+		this.getFriendsData().then(this.getSessionsData);
 	},
 	computed: {
 		sessions: function () {
@@ -29,21 +37,55 @@ module.exports = Vue.extend({
 			var self = this;
 
 			var data = _.map(this.msgList, function (o) {
-				var t, f;
-				var userInfo = {avatar: self.avatar, nickname: self.nickname, id: uid};
-				if ( uid == o.from ) {
-					t = fData[o.to];
+				var t = o.to,
+					f = o.from,
+					tmp,
+					toUser,
+					fromUser,
+					read,
+					userInfo = {
+						avatar: self.userInfo.avatar,
+						nickname: self.userInfo.nickname,
+						id: uid,
+						from: uid,
+						to: o.to
+					};
+
+				tmp = fData[t];
+				if (tmp) {
+					toUser = {
+						avatar: tmp.avatar,
+						nickname: tmp.nickname,
+						id: t,
+						from: f,
+						to: f
+					};
 				} else {
-					t = fData[o.to];
+					toUser = userInfo;
 				}
 
+				tmp = fData[f];
+				if (tmp) {
+					fromUser = {
+						avatar: tmp.avatar,
+						nickname: tmp.nickname,
+						id: f,
+						from: f,
+						to: t
+					};
+				} else {
+					fromUser = userInfo;
+				}
+
+				read = (+self.talkingWith === +o.from) || (+o.from === +uid) ? 1 : o.read;
 				return {
 					from: o.from,
 					to: o.to,
 					body: o.body,
-					toUser: fData[o.to] || userInfo,
-					fromUser: fData[o.from] || userInfo,
-					createtime: o.createtime
+					toUser: toUser,
+					fromUser: fromUser,
+					createtime: o.createtime,
+					read: read
 				};
 			});
 
@@ -57,13 +99,19 @@ module.exports = Vue.extend({
 				
 				var last = o.last();
 				var data = (uid === last.from) ? last.toUser : last.fromUser;
+				var unreadCount = _.filter(o, function (item) {
+					return +item.read === 0;
+				}).length;
 
 				return {
+					id: data.id,
+					from: uid,
 					to: data.id,
 					nickname: data.nickname,
 					avatar: data.avatar,
 					createtime: last.createtime,
-					body: last.body
+					body: last.body,
+					unreadCount: unreadCount
 				};
 			});
 
@@ -84,12 +132,9 @@ module.exports = Vue.extend({
 					return;
 				}
 
-				this.$data = _.assign({
-					current_menu: 'session',
-					show_main: true,
-					friends: {},
-					userInfo: data.msg
-				});
+				this.current_menu = 'session';
+				this.show_main = true;
+				this.userInfo = data.msg;
 			});
 		},
 		getFriendsData: function () {
@@ -105,16 +150,29 @@ module.exports = Vue.extend({
 					this.friends = _.keyBy(res.msg, function (o) {
 						return o.id;
 					});
+					this.show_friends = true;
 				}
 			});
 		},
-		getSessionsData: function () {
+		_getSessions: function (data) {
 			return this.$http({
-				url: '/api/user/getSessions',
+				url: '/api/message/getSessions',
 				method: 'get',
 				dataType: 'json',
-				data: {uid: uid}
-			})
+				data: data
+			});
+		},
+		getSessionsData: function (unread) {
+			var friendsIds = _.keys(_.filter(this.friends, function (o) {
+				return o.mutual === 1;
+			}));
+			this.mutualFriendsCount = friendsIds.length;
+			if ( friendsIds.length === 0 ) {
+				this.msgList = [];
+				return;
+			}
+			return this
+			._getSessions({uid: uid, unread: !!unread, friends: _.keys(this.friends)})
 			.then(function(res) {
 				var data = res.data;
 				if (data && !data.errno) {
@@ -144,8 +202,19 @@ module.exports = Vue.extend({
 			redirect();
 		},
 
+		openMsgDialog: function (toUser) {
+			var id = toUser.id;
+			this.talkingWith = id;
+
+			this.dispatchChildEvent('openMsgDialog', {
+				f: this.userInfo,
+				t: toUser,
+				m: this.sessions[id]
+			});
+		},
+
 		getToId: function (o) {
-			return uid === o.from ? fData[ o.to ] : fData[o.from];
+			return uid === o.from ? o.to : o.from;
 		},
 		getFriendData: function (id) {
 			return this.friends[id];
@@ -154,17 +223,82 @@ module.exports = Vue.extend({
 		getSessionData: function (u) {
 			return this.sessions[ this.getToId(u) ];
 		},
-		test: function () {
-			console.log('test');
+
+		poll: function () {
+			var self = this;
+			if (this.friends.length == 0) {
+				return;
+			}
+			if ( this.polling ) {
+				return false;
+			}
+			this.polling = true;
+			this
+			._getSessions({uid: uid, unread: true, friends: _.keys(this.friends)})
+			.then(function (res) {
+				var tid = this.talkingWith;
+				this.polling = false;
+
+				var data = res.data;
+				if (data && data.length > 0) {
+					this.msgList = _.uniq(this.msgList.concat(data), 'createtime');
+
+					if ( tid ) {
+						this.dispatchChildEvent('updateMsgList', this.sessions[tid]);
+					}
+
+					this.noMsg = false;
+				} else {
+					this.noMsg = true;
+				}
+
+				setTimeout(function() {
+					self.poll();
+				}, this.pollTime);
+			});
+		},
+
+
+		processAddRequest: function (action, id) {
+			if (action === 'reject' || action === 'accept') {
+				this.$http({
+					url: '/api/user/processAddRequest',
+					method: 'POST',
+					data: {
+						action: action,
+						uid: uid,
+						friend_id: id
+					}
+				}).then(function (data) {
+					if ( data.data.success ) {
+						this.friends[id].mutual = 1;
+
+						if ( this.mutualFriendsCount === 0 ) {
+							this.getSessionsData().then(this.poll);
+							this.mutualFriendsCount += 1;
+						}
+					}
+				});
+			}
 		}
 	},
 	events: {
-		updateSession: function (data) {
-			this.msgList.push(data);
+		updateMsgFromDialog: function (data) {
+			this.$nextTick(function () {
+				if ( this.msgList.last().createtime < data.createtime ) {
+					this.msgList.push(data);
+				} else {
+					console.log('oh oh');
+				}
+			});
 		},
 
 		getFriendData: function (id) {
 			return this.friends[id];
+		},
+
+		dialogClosed: function () {
+			this.talkingWith = '';
 		}
 	}
 });

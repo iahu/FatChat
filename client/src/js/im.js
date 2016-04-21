@@ -6,8 +6,8 @@ var Vue = require('./lib/vue.min.js'),
 	setCookie = require('./lib/setCookie.js'),
 	deleteCookie = require('./lib/deleteCookie.js'),
 	getTimeString = require('./lib/getTimeString.js'),
+	zeroPadding = require('./lib/zeroPadding.js'),
 	getP1 = require('./lib/getP1.js');
-	htmlToElement = require('./lib/htmlToElement.js');
 
 var session = getCookie('s'),
 	P0 = getCookie('P0'),
@@ -28,8 +28,31 @@ Vue.filter('genderFilter', function (value) {
 });
 Vue.filter('getTimeString', getTimeString);
 Vue.filter('getDateString', function (s) {
-	var d = new Date(+s);
-	return [ d.getMonth()+1, d.getDate() ].join('-');
+	s = +s;
+	var d = new Date(s);
+	var now = new Date();
+	if ( d.getFullYear() !== now.getFullYear() ) {
+		return getTimeString(s);
+	}
+	if ( d.getMonth() !== now.getMonth() ) {
+		return [
+			zeroPadding(d.getMonth()+1, 2),
+			zeroPadding(d.getDate(), 2)
+		].join('-');
+	}
+	if ( d.getDate() !== now.getDate() ) {
+		if ( now.getDate() - d.getDate() == 1 ) {
+			return '昨天';
+		}
+		return [
+			zeroPadding(d.getMonth()+1, 2),
+			zeroPadding(d.getDate(), 2)
+		].join('-');
+	}
+	return [
+			zeroPadding(d.getHours(), 2),
+			zeroPadding(d.getMinutes(), 2)
+		].join(':')
 });
 Vue.filter('msgTypeFilter', function(id) {
 	return +id === +uid ? 'sent' : 'received';

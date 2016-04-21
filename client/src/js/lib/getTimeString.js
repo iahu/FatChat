@@ -1,9 +1,9 @@
 module.exports = function(ts) {
-    var date = new Date( ts );
+    var date = new Date( +ts );
     var zPad = require('./zeroPadding.js');
     var now = '';
     if ( date.toString() === 'Invalid Date' ) {
-    	date = new Date();
+        throw Error('Invalid Date');
     }
     now += date.getFullYear() + "-";
     now += zPad((date.getMonth() + 1),2) + "-";

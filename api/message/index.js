@@ -1,4 +1,4 @@
 module.exports = {
-	get: require('./get.js'),
+	getSessions: require('./getSessions.js'),
 	send: require('./send.js')
 }

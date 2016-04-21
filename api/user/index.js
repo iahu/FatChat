@@ -1,8 +1,9 @@
 module.exports = {
-	getUserInfo: require('./getUserInfo'),
 	sigin: require('./sigin'),
 	sigout: require('./sigout'),
+
+	getUserInfo: require('./getUserInfo'),
 	addFriends: require('./addFriends'),
-	getFriends: require('./getFriends'),
-	getSessions: require('./getSessions')
+	processAddRequest: require('./processAddRequest'),
+	getFriends: require('./getFriends')
 };

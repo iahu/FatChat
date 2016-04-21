@@ -8,7 +8,7 @@
 <body>
 	<div class="container" id="im">
 		<im-main v-on:show-modal="showModal" v-on:event-from-child="eventFromChild"></im-main>
-		<im-dialog maxsize="50"></im-dialog>
+		<im-dialog maxsize="100"></im-dialog>
 		<im-modal :arg="modalData"></im-modal>
 	</div>
 
@@ -22,6 +22,7 @@
 							<img v-if="userInfo.avatar" :src="'/img/avatar/'+userInfo.avatar" alt="{{userInfo.nickname}}" width="64" height="64">
 						</div>
 						<p class="name-info">{{userInfo.nickname}}</p>
+						<b class="vender">FatChat</b>
 					</div>
 
 					<div class="addfriends" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
@@ -39,18 +40,27 @@
 					<div class="panel-group">
 						<div class="panel-body session" v-show="current_menu === 'session'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'sessions')">
+								<!-- 历史会话列表 -->
 								<ul class="session-list">
-									<li v-for="s in lastMsgList" class="clearfix" :class="{active: sessionsActiveID == $index}" @dblclick="dispatchChildEvent('openMsgDialog', {f: userInfo, t: s, m: sessions[ s.to ] })" @click.stop="toggleClass($index, 'sessions')">
-										<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
-										<div class="text">
-											<div>
-												<span class="title">{{s.nickname}}</span>
-												<span class="ts">{{s.createtime | getDateString}}</span>
-											</div>
-											<span class="body">{{s.body}}</span>
-										</div>
-									</li>
-									<li v-if="!sessions"><span class="title">暂无历史会话</span></li>
+									<template v-for="s in lastMsgList">
+										<li v-if="s" class="clearfix" :class="{active: sessionsActiveID == $index}" @dblclick="openMsgDialog(s)">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')">
+												<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
+												<div class="text">
+													<div>
+														<span class="title">{{s.nickname}}</span>
+														<span class="ts">{{s.createtime | getDateString}}</span>
+													</div>
+													<span class="body">
+														{{s.body}}
+														<span class="unread-count" v-show="s.unreadCount">{{s.unreadCount}}</span>
+													</span>
+												</div>
+											</a>
+										</li>
+									</template>
+
+									<li v-if="lastMsgList.length===0" class="empty-tip"><span class="title">暂无历史会话~</span></li>
 								</ul>
 							</div>
 						</div>
@@ -58,13 +68,34 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<li v-if="friends" class="clearfix" v-for="friend in friends" @dblclick="dispatchChildEvent('openMsgDialog', {f: userInfo, t: friend, m: sessions[ s.to ] })" :class="{active: friendsActiveID == $index}" @click.stop="toggleClass($index, 'friends')">
-										<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
-										<div class="text">
-											<span class="title">{{friend.nickname}}</span>
-										</div>
-									</li>
-									<li v-if="!friends"><span class="title">你还没有增加好友</span></li>
+									<template v-for="friend in friends" v-if="friend">
+										<li v-if="friend.mutual" class="clearfix" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')">
+												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
+												<div class="text">
+													<span class="title">{{friend.nickname}}</span>
+												</div>
+											</a>
+										</li>
+
+										<li v-else class="clearfix add-request">
+											<div class="list-link" @click.stop="toggleClass($index, 'friends')" :class="{active: friendsActiveID == $index}">
+												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
+												<div class="text">
+													<div class="title">
+														<span class="name">{{friend.nickname}}</span> 请求加你好友
+													</div>
+													<div class="action-bar">
+														<button class="accept" @click="processAddRequest('accept', friend.id)">同意</button>
+														<button class="reject" @click="processAddRequest('reject', friend.id)">拒绝</button>
+													</div>
+												</div>
+											</div>
+										</li>
+									</template>
+									<template v-else>
+										<li v-else class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
+									</template>
 								</ul>
 							</div>
 						</div>
@@ -166,7 +197,7 @@
 				
 							<div class="im-input-box">
 								<div class="im-input-outter">
-									<textarea class="im-input" autofocus="true" maxlength="200" v-model="msg" @keydown.enter.prevent="send"></textarea>
+									<textarea class="im-input" id="im-input" autofocus="true" maxlength="200" v-model="msg" @keydown.enter.prevent="send"></textarea>
 								</div>
 								<div class="im-input-box-bar clearfix">
 									<label class="set-send-key"><input type="checkbox" v-model="usesCtrlKey"> 按 {{usesCtrlKey ? 'Ctrl+' : ''}}Enter 发送</label>

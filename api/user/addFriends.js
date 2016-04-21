@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
 	var uid = params.uid;
 	var cookie = req.cookie;
 	var friends = [];
-	var ids = params.ids.split(',');
+	var ids = params.ids.split(',').sort();
 	var values;
 
 	if ( ! (cookie.P0 && uid && (makeSessionID(uid, cookie.P0).id === cookie.s) && ids ) ) {

@@ -19,9 +19,6 @@ module.exports = function (req, res, next) {
 		case checkParam(params.password, paramsValidate.password):
 			msg = '密码格式有误';
 			break;
-		case checkParam(params.password, paramsValidate.password) && params.password === params.password_check:
-			msg = '两次密码不一致';
-			break;
 		case checkParam(params.email, paramsValidate.email):
 			msg = '邮箱格式有误';
 			break;

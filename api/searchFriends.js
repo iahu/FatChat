@@ -15,11 +15,12 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail'});
 	}
 
-	qs = 'SELECT id, nickname, avatar, gender FROM users WHERE ' +
+	qs = 'SELECT users.id, nickname, avatar, gender FROM users WHERE ' +
 		(colname === 'email'?
 			('email=' + db.escape(info))
 			: (' nickname LIKE \'%'+ info + '%\'')
-		) + ' LIMIT ' + (12 * page) + ', 12';
+		) +
+		' LIMIT ' + (12 * page) + ', 12';
 
 	db.query(qs, function (err, body) {
 		if (err) {
