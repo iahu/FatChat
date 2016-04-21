@@ -7,6 +7,7 @@ var Vue = require('./lib/vue.min.js'),
 	deleteCookie = require('./lib/deleteCookie.js'),
 	getTimeString = require('./lib/getTimeString.js'),
 	zeroPadding = require('./lib/zeroPadding.js'),
+	redirect = require('./lib/redirect.js');
 	getP1 = require('./lib/getP1.js');
 
 var session = getCookie('s'),

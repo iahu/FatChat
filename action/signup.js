@@ -1,5 +1,6 @@
 module.exports = function (req, res, next) {
 	var db = require('../lib/mydb.js');
+	var util = require('util');
 	var avatarData = require('../avatar-data.json');
 	var querystring = require('querystring');
 	var paramsValidate = require('../lib/paramsValidate.js');
@@ -7,20 +8,23 @@ module.exports = function (req, res, next) {
 	var makeSessionID = require('../lib/makeSessionID.js');
 	var checkParam = paramsValidate.checkParam;
 	var params = req.body;
+	var cookie = req.cookie;
 	var msg = '';
 	var insertData = null;
 	var avatar;
-	var session;
+	var formData = util._extend({}, params);
 	if (req.method !== 'POST') {
 		return next();
 	}
+	params.email = params.email.toLowerCase();
+	delete formData.password;
 
 	switch(false) {
-		case checkParam(params.password, paramsValidate.password):
-			msg = '密码格式有误';
-			break;
 		case checkParam(params.email, paramsValidate.email):
 			msg = '邮箱格式有误';
+			break;
+		case checkParam(params.password, paramsValidate.password):
+			msg = '密码格式有误';
 			break;
 		case checkParam(params.nickname, paramsValidate.nickname):
 			msg = '昵称格式有误';
@@ -30,7 +34,19 @@ module.exports = function (req, res, next) {
 			break;
 	}
 	if (msg) {
-		res.responseJSONP({status: 'ok', success: false, msg: msg});
+		res.writeHead(302, {
+			'Location': '/signup.html',
+			'Set-Cookie': [
+				'signupMsg='+ encodeURIComponent(msg)+ '; Max-Age=1; path=/signup.html; ',
+				'formData='+ querystring.encode(params) + '; Max-Age=1; path=/signup.html'
+			]
+		});
+		res.end();
+		return;
+	} else {
+		res.writeHead(200, {
+			'Set-Cookie': 'signupMsg=; Max-Age=-1; path=/'
+		});
 	}
 	avatar = avatarData[ Math.floor(Math.random() * avatarData.length) ];
 	insertData = {
@@ -47,7 +63,14 @@ module.exports = function (req, res, next) {
 		}
 
 		if ( body && body.length > 0 ) {
-			res.responseJSONP({status: 'ok', success: false, msg: '该邮箱已经注册过'});
+			res.writeHead(302, {
+				'Location': '/signup.html',
+				'Set-Cookie': [
+					'signupMsg='+ encodeURIComponent('该邮箱已经注册过') +'; Max-Age=1; path=/signup.html; ',
+					'formData='+ querystring.encode(params) + '; Max-Age=1; path=/signup.html'
+				]
+			});
+			res.end();
 			return;
 		}
 
@@ -59,6 +82,8 @@ module.exports = function (req, res, next) {
 				res.writeHead(302, {
 					'Location': '/',
 					'Set-Cookie': [
+						'signupMsg=; Max-Age=-1; path=/login.html; ',
+						'formData=; Max-Age=-1; path=/login.html; ',
 						's=' + session.id + '; path=/; ',
 						'P0='+ session.key + '; path=/; ',
 						'P1='+ encodeURIComponent(JSON.stringify({

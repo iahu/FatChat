@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>创建您的 胖子IM 帐户</title>
+	<title>创建您的 FatChat 帐户</title>
 	<link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
-	<div class="wrapper signup-page">
+	<div class="wrapper signup-page" id="sginup-page">
 		<div class="header-bar">
 			<div class="header">
 				<img src="/img/logo.png" alt="PANZI IM" class="logo">
@@ -20,29 +20,33 @@
 			<h2>创建您的 FatChat 帐户</h2>
 			<div class="clearfix">
 				<div class="signup">
-					<form action="/action/signup" method="POST" class="form-horizontal signup-form" role="form">
+					<div id="alert" v-show="alertMsg">{{alertMsg}}</div>
+					<form action="/action/signup" method="POST" class="form-horizontal signup-form" role="form" @submit="submit">
 						<div class="form-group">
 							<label for="email">邮箱</label>
-							<input type="email" name="email" id="email" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}.[a-zA-Z]{2,4}$" autofocus="autofocus">
+							<input type="text" v-model="email" name="email" id="email" autofocus="autofocus" @blur="clearMsg" @keyup="validator" :value="formData.email">
+							<div class="validate-msg" v-show="validatMsg.email">{{validatMsg.email}}</div>
 						</div>
 						<div class="form-group">
 							<label for="password">密码</label>
-							<input type="password" name="password" id="password" required="required" pattern="^[a-zA-Z\d-_]{6,16}$">
+							<input type="password" v-model="password" name="password" id="password" @blur="clearMsg" @keyup="validator">
+							<div class="validate-msg" v-show="validatMsg.password">{{validatMsg.password}}</div>
 						</div>
 						<div class="form-group">
 							<label for="nickname">昵称</label>
-							<input type="text" name="nickname" id="nickname" required="required" pattern="^[a-zA-Z\d\u4e00-\u9fa5-_.]{1,15}$">
+							<input type="text" v-model="nickname" name="nickname" id="nickname" @blur="clearMsg" @keyup="validator" :value="formData.nickname">
+							<div class="validate-msg" v-show="validatMsg.nickname">{{validatMsg.nickname}}</div>
 						</div>
 						<div class="form-group">
-							<label for="gender" required="required">性别</label>
-							<select name="gender" id="gender">
-								<option value="1">男</option>
+							<label for="gender">性别</label>
+							<select v-model="gender" name="gender" id="gender" :value="formData.gender || 1">
+								<option value="1" selected="selected">男</option>
 								<option value="2">女</option>
 								<option value="3">其他</option>
 							</select>
 						</div>
 						<div class="form-group submit-group">
-							<button type="submit" class="btn btn-large btn-submit">提交</button>
+							<button type="submit" class="btn btn-large btn-submit" :disabled="allValidate > 0">提交</button>
 						</div>
 						<div class="form-group tips">
 							已经注册了帐户？

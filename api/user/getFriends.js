@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
 		
 		'(SELECT user_id FROM friendship WHERE'+
 		' friend_id=' + db.escape(uid) +
-		' AND user_id<>' + db.escape(uid) + 
+		' AND mutual=1' + 
 		')'+
 		' AND ('+
 			'(friendship.user_id='+ db.escape(uid) +' AND friendship.friend_id=users.id)'+

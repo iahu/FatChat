@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>在线聊天室</title>
+	<title>FatChat在线聊天</title>
 	<link rel="stylesheet" href="/prd/css/im.css">
 </head>
 <body>
@@ -43,8 +43,8 @@
 								<!-- 历史会话列表 -->
 								<ul class="session-list">
 									<template v-for="s in lastMsgList">
-										<li v-if="s" class="clearfix" :class="{active: sessionsActiveID == $index}" @dblclick="openMsgDialog(s)">
-											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')">
+										<li v-if="s" class="clearfix" :class="{active: sessionsActiveID == $index}">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')"  @dblclick="openMsgDialog(s)">
 												<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
 												<div class="text">
 													<div>
@@ -69,8 +69,8 @@
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
 									<template v-for="friend in friends" v-if="friend">
-										<li v-if="friend.mutual" class="clearfix" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
-											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')">
+										<li v-if="friend.mutual" class="clearfix">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 												<div class="text">
 													<span class="title">{{friend.nickname}}</span>
@@ -200,7 +200,14 @@
 									<textarea class="im-input" id="im-input" autofocus="true" maxlength="200" v-model="msg" @keydown.enter.prevent="send"></textarea>
 								</div>
 								<div class="im-input-box-bar clearfix">
-									<label class="set-send-key"><input type="checkbox" v-model="usesCtrlKey"> 按 {{usesCtrlKey ? 'Ctrl+' : ''}}Enter 发送</label>
+									<label class="set-send-key">
+										<input type="checkbox" v-model="usesCtrlKey"> 按
+										<template v-if="!usesCtrlKey">
+											<code class="keyboard">Ctrl</code> +
+										</template>
+										<code class="keyboard">Enter</code>
+										发送
+									</label>
 									<button class="im-send-btn fl-r" @click="send">发送</button>
 								</div>
 							</div>

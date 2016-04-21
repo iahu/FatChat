@@ -1,6 +1,6 @@
 var getCookie = require('./lib/getCookie.js');
 var parserQuery = require('./lib/parserQuery.js');
-var signupPage = document.getElementById('sginup-page').className.indexOf('is-sigin') < 0;
+var signupPage = document.getElementById('sginup-page');
 var msg = signupPage? getCookie('signupMsg') : getCookie('signinMsg');
 var formData = parserQuery(decodeURIComponent(getCookie('formData')));
 
@@ -12,22 +12,18 @@ Vue.filter('validator', function () {
 	console.log(arguments);
 });
 
-var validatMsg = {
-	email: '',
-	password: ''
-};
-if ( signupPage ) {
-	validatMsg.nickname = '';
-	validatMsg.gender = '';
-}
-
 
 var sginup = new Vue({
 	el: '#sginup-page',
 	data: {
 		formData: formData,
 		alertMsg: msg,
-		validatMsg: validatMsg,
+		validatMsg: {
+			email: '',
+			password: '',
+			nickname: '',
+			gender: ''
+		},
 		patterns: {
 			email: /^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}\.[a-zA-Z]{2,4}$/,
 			password: /^[a-zA-Z\d-_]{6,16}$/,

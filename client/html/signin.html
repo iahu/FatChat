@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>登录 胖子IM</title>
+	<title>登录 FatChat</title>
 	<link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
-	<div class="wrapper signup-page">
+	<div class="wrapper signup-page is-sigin" id="sginup-page">
 		<div class="header-bar">
 			<div class="header">
 				<img src="/img/logo.png" alt="PANZI IM" class="logo">
@@ -20,17 +20,20 @@
 			<h2>欢迎登录 FatChat</h2>
 			<div class="clearfix">
 				<div class="signup">
+					<div id="alert"></div>
 					<form action="/action/signin" method="POST" class="form-horizontal" role="form">
 							<div class="form-group">
 								<label for="email">邮箱</label>
-								<input type="email" name="email" id="email" required="required" pattern="^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}.[a-zA-Z]{2,4}$" autofocus="autofocus">
+								<input type="text" v-model="email" name="email" id="email" autofocus="autofocus" @blur="clearMsg" @keyup="validator" :value="formData.email">
+							<div class="validate-msg" v-show="validatMsg.email">{{validatMsg.email}}</div>
 							</div>
 							<div class="form-group">
 								<label for="password">密码</label>
-								<input type="password" name="password" id="password" required="required" pattern="^[a-zA-Z\d-_]{6,16}$">
+								<input type="password" v-model="password" name="password" id="password" @blur="clearMsg" @keyup="validator">
+							<div class="validate-msg" v-show="validatMsg.password">{{validatMsg.password}}</div>
 							</div>
 							<div class="form-group submit-group clearfix">
-								<button type="submit" class="btn btn-large btn-submit">登录</button>
+								<button type="submit" class="btn btn-large btn-submit" :disabled="allValidate > 0">登录</button>
 							</div>
 							<div class="form-group tips">
 								还没有帐户？

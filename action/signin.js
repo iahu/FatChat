@@ -8,6 +8,8 @@ module.exports = function (req, res, next) {
 	var session;
 	var msg, md5Password;
 
+	params.email = params.email.toLowerCase();
+
 	switch(false) {
 		case checkParam(params.email, paramsValidate.email):
 			msg = '邮箱格式有误';
