@@ -271,11 +271,17 @@ module.exports = Vue.extend({
 					}
 				}).then(function (data) {
 					if ( data.data.success ) {
-						this.friends[id].mutual = 1;
+						if ( action === 'accept' ) {
+							this.friends[id].mutual = 1;
 
-						if ( this.mutualFriendsCount === 0 ) {
-							this.getSessionsData().then(this.poll);
-							this.mutualFriendsCount += 1;
+							if ( this.mutualFriendsCount === 0 ) {
+								this.getSessionsData().then(this.poll);
+								this.mutualFriendsCount += 1;
+							}
+						} else {
+							this.friends = _.filter(this.friends, function (o) {
+								return o.id !== id;
+							});
 						}
 					}
 				});

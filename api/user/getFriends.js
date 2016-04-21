@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail or bad arguments'});
 	}
 
-	db.query('SELECT id, avatar, gender, nickname, mutual'+
+	db.query('SELECT DISTINCT(id), avatar, gender, nickname, mutual'+
 		' FROM users,friendship WHERE id IN '+
 		
 		'(SELECT user_id FROM friendship WHERE'+
@@ -22,8 +22,8 @@ module.exports = function (req, res, next) {
 		' AND ('+
 			'(friendship.user_id='+ db.escape(uid) +' AND friendship.friend_id=users.id)'+
 			' OR (friendship.friend_id='+ db.escape(uid) +' AND friendship.user_id=users.id)'+
-		')'+
-		' GROUP BY id',
+		')',
+		// ' GROUP BY users.id',
 	function (err, body) {
 		if (err) {
 			console.log(err);
