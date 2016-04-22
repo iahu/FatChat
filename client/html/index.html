@@ -14,7 +14,7 @@
 
 
 	<script type="text/x-template" id="main-tpl">
-		<div class="main-wrapper" v-if="show_main">
+		<div class="main-wrapper" v-if="show_main" transition="fade">
 			<div class="main">
 				<div class="top-bar">
 					<div class="inner clearfix">
@@ -68,7 +68,7 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<template v-if="totalFriendsCount" v-for="friend in friends">
+									<template v-for="friend in friends">
 										<li v-if="friend.mutual" class="clearfix">
 											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
@@ -93,7 +93,7 @@
 											</div>
 										</li>
 									</template>
-									<li v-if="totalFriendsCount===0" class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
+									<li v-if="totalFriendsCount === 0" class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
 								</ul>
 							</div>
 						</div>

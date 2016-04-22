@@ -2,6 +2,20 @@
 @import './less/modal.less';
 @import './less/list.less';
 
+.fade-transition {
+	-webkit-transition: all 1s ease-out;
+	-moz-transition: all 1s ease-out;
+	-ms-transition: all 1s ease-out;
+	-o-transition: all 1s ease-out;
+	transition: all 1s ease-out;
+}
+.fade-enter {
+	opacity: 0;
+}
+.fade-leave {
+	opacity: 1;
+}
+
 .slideInLeft-transition {
 	-webkit-transition: all 0.25s ease-out;
 	-moz-transition: all 0.25s ease-out;
