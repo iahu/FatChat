@@ -78,7 +78,7 @@ module.exports = function (req, res, next) {
 			if (err) {
 				res.responseJSONP({status: 'ok', success: false, msg: err.message});
 			} else {
-				session = makeSessionID( cookie.P0 );
+				var session = makeSessionID( body.insertId );
 				res.writeHead(302, {
 					'Location': '/',
 					'Set-Cookie': [
@@ -88,7 +88,7 @@ module.exports = function (req, res, next) {
 						'P0='+ session.key + '; path=/; ',
 						'P1='+ encodeURIComponent(JSON.stringify({
 							email: insertData.email,
-							uid: body.id,
+							uid: body.insertId,
 							nickname: insertData.nickname})) + '; path=/',
 					]
 				});

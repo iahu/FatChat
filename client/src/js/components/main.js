@@ -15,11 +15,11 @@ module.exports = Vue.extend({
 			friendsActiveID: -1,
 			current_menu: 'session',
 			friends: '',
+			totalFriendsCount: '',
+			mutualFriends: '',
 			msgList: '',
 			userInfo: '',
-			msgList: '',
 			show_main: false,
-			show_friends: false,
 			mutualFriendsCount: 0,
 			polling: false,
 			talkingWith: 0,
@@ -33,86 +33,34 @@ module.exports = Vue.extend({
 	},
 	computed: {
 		sessions: function () {
-			var fData = this.friends;
-			var self = this;
-
-			var data = _.map(this.msgList, function (o) {
-				var t = o.to,
-					f = o.from,
-					tmp,
-					toUser,
-					fromUser,
-					read,
-					userInfo = {
-						avatar: self.userInfo.avatar,
-						nickname: self.userInfo.nickname,
-						id: uid,
-						from: uid,
-						to: o.to
-					};
-
-				tmp = fData[t];
-				if (tmp) {
-					toUser = {
-						avatar: tmp.avatar,
-						nickname: tmp.nickname,
-						id: t,
-						from: f,
-						to: f
-					};
+			return _.groupBy(this.msgList, function (o) {
+				if ( o.from == uid ) {
+					return o.to;
 				} else {
-					toUser = userInfo;
+					return o.from;
 				}
-
-				tmp = fData[f];
-				if (tmp) {
-					fromUser = {
-						avatar: tmp.avatar,
-						nickname: tmp.nickname,
-						id: f,
-						from: f,
-						to: t
-					};
-				} else {
-					fromUser = userInfo;
-				}
-
-				read = (+self.talkingWith === +o.from) || (+o.from === +uid) ? 1 : o.read;
-				return {
-					from: o.from,
-					to: o.to,
-					body: o.body,
-					toUser: toUser,
-					fromUser: fromUser,
-					createtime: o.createtime,
-					read: read
-				};
 			});
-
-			return _.groupBy(data, function (o) {
-							return uid === o.from ? o.to : o.from;
-						});
 		},
 
 		lastMsgList: function () {
-			var data = _.map(this.sessions, function (o, key) {
-				
+			var friends = this.friends;
+			var data = [];
+			_.forEach(this.sessions, function (o, key) {
 				var last = o.last();
-				var data = (uid === last.from) ? last.toUser : last.fromUser;
-				var unreadCount = _.filter(o, function (item) {
-					return +item.read === 0;
-				}).length;
+				var friend = friends[key];
+				var unreadCount;
 
-				return {
-					id: data.id,
-					from: uid,
-					to: data.id,
-					nickname: data.nickname,
-					avatar: data.avatar,
-					createtime: last.createtime,
-					body: last.body,
-					unreadCount: unreadCount
-				};
+				if (friend) {
+					unreadCount = _.filter(o, function (m) {
+						return m.mutual === 0;
+					}).length;
+
+					data.push(
+						_.assign({
+							unreadCount: unreadCount
+						}, last, friend)
+					);
+				}
 			});
 
 			return _.orderBy(data, 'createtime', 'desc');
@@ -146,11 +94,16 @@ module.exports = Vue.extend({
 			})
 			.then(function (res) {
 				res = res.data;
-				if (res && res.success) {
+				if (res && res.success && res.msg.length) {
+					this.totalFriendsCount = res.msg.length;
 					this.friends = _.keyBy(res.msg, function (o) {
 						return o.id;
 					});
-					this.show_friends = true;
+					this.mutualFriends = _.filter(this.friends, function (o) {
+						return o.mutual === 1;
+					});
+				} else {
+					this.totalFriendsCount = 0;
 				}
 			});
 		},
@@ -163,10 +116,7 @@ module.exports = Vue.extend({
 			});
 		},
 		getSessionsData: function (unread) {
-			var friendsIds = _.keys(_.filter(this.friends, function (o) {
-				return o.mutual === 1;
-			}));
-			this.mutualFriendsCount = friendsIds.length;
+			var friendsIds = _.keys(this.mutualFriends);
 			if ( friendsIds.length === 0 ) {
 				this.msgList = [];
 				return;
@@ -226,7 +176,7 @@ module.exports = Vue.extend({
 
 		poll: function () {
 			var self = this;
-			if (this.friends.length == 0) {
+			if (this.friends.length === 0) {
 				return;
 			}
 			if ( this.polling ) {

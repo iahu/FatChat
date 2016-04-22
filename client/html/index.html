@@ -25,7 +25,7 @@
 						<b class="vender">FatChat</b>
 					</div>
 
-					<div class="addfriends" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
+					<div class="addfriends-bar" @click="dispatchChildEvent('showModal', {id: 'addfriends-modal', title: '添加好友', modalBody: 'searchfriends'})">
 						<i class="icon add"></i><a href="javascript:;" data-action="showModal" data-arg="addfriends, 添加好友">查找并添加好友</a>
 					</div>
 				</div>
@@ -42,8 +42,8 @@
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'sessions')">
 								<!-- 历史会话列表 -->
 								<ul class="session-list">
-									<template v-for="s in lastMsgList">
-										<li v-if="s" class="clearfix" :class="{active: sessionsActiveID == $index}">
+									<template v-if="lastMsgList.length" v-for="s in lastMsgList">
+										<li class="clearfix" :class="{active: sessionsActiveID == $index}">
 											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')"  @dblclick="openMsgDialog(s)">
 												<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
 												<div class="text">
@@ -60,7 +60,7 @@
 										</li>
 									</template>
 
-									<li v-if="lastMsgList.length===0" class="empty-tip"><span class="title">暂无历史会话~</span></li>
+									<li v-if="lastMsgList.length==0" class="empty-tip"><span class="title">暂无历史会话~</span></li>
 								</ul>
 							</div>
 						</div>
@@ -68,7 +68,7 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<template v-for="friend in friends" v-if="friend">
+									<template v-if="totalFriendsCount" v-for="friend in friends">
 										<li v-if="friend.mutual" class="clearfix">
 											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
@@ -93,9 +93,7 @@
 											</div>
 										</li>
 									</template>
-									<template v-else>
-										<li v-else class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
-									</template>
+									<li v-if="totalFriendsCount===0" class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
 								</ul>
 							</div>
 						</div>

@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
 	var ids = params.ids.split(',').sort();
 	var values;
 
-	if ( ! (cookie.P0 && uid && (makeSessionID(uid, cookie.P0).id === cookie.s) && ids ) ) {
+	if ( !uid ) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail or bad arguments'});
 	}
 

@@ -27,9 +27,11 @@ app.use( serveStatic(__dirname + '/client/img') );
 
 
 function routes(req, res, next) {
-	var match, pathList, method, cookie, parsedUrl;
+	var match, pathList, method, cookie, uid, sessionID;
 
 	cookie = querystring.parse(req.headers.cookie, '; ');
+	uid = cookie.P1 ? JSON.parse(cookie.P1).uid : null;
+	sessionID = makeSessionID(uid, cookie.P0).id;
 	req.cookie = cookie;
 	req.params = querystring.parse(req._parsedUrl.query);
 
@@ -40,8 +42,8 @@ function routes(req, res, next) {
 
 	if ( /(.+)\.html/.test(req.url) &&
 		! /^\/(signin|signup)\.html([?#](.+))?$/.test(req.url) &&
-		! cookie.s ) {
-		// todo 校验 session 是否匹配 im/user
+		(sessionID !== cookie.s)
+	) {
 		res.writeHead(302, {
 			'Location': '/signin.html'
 		});
@@ -58,7 +60,7 @@ function routes(req, res, next) {
 
 	if ( match = req.url.match(/^\/(api|action)\/([^#\?]+)/) ) {
 		if (! cookie.s && ! /^\/(signin|signup)?([?#](.+))?/.test(req.url) ) {
-			// todo 校验 session 是否匹配 im/user
+			// todo 脨拢脩茅 session 脢脟路帽脝楼脜盲 im/user
 			res.writeHead(302, {
 				'Location': '/signin.html'
 			});

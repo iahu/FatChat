@@ -40,8 +40,7 @@ module.exports = Vue.extend({
 		},
 		send: function (event) {
 			var self = this,
-				u = self.toUser,
-				id = u.to,
+				id = self.toUser.id,
 				msgData;
 			if (event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
 				return false;

@@ -174,10 +174,10 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				color: #333;
 			}
 
-			.addfriends {
-				background-color: #FBFBFB;
-				border-top: 1px solid #ddd;
-				border-bottom: 1px solid #ddd;
+			.addfriends-bar {
+				background-color: #eee;
+				border-top: 1px solid #aaa;
+				border-bottom: 1px solid #aaa;
 				padding: 5px;
 				.icon.add {
 					display: inline-block;
@@ -192,7 +192,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 					text-decoration: none;
 					font-size: 14px;
 					height: 16px;
-					color: #999;
+					color: #666;
 				}
 			}
 
@@ -201,6 +201,8 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				right: 6px;
 				font-size: 12px;
 				color: #CECECE;
+				-webkit-user-select: none;
+				user-select: none;
 			}
 		}
 
@@ -209,9 +211,9 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			bottom: 0;
 			left: 0;
 			width: 100%;
-			background-color: #DEDEDE;
+			background-color: #eee;
 			z-index: 3;
-			border-top: 1px solid #D2D0D0;
+			border-top: 1px solid #C3C3C3;
 		}
 
 		.menu-list {
@@ -224,6 +226,8 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			width: 1%;
 			color: #333;
 			position: relative;
+			border-right: 1px solid #eee;
+			margin-left: -1px;
 
 			.menu-bar {
 				cursor: pointer;
@@ -241,8 +245,10 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				}
 			}
 			&.active {
-				background-color: #ccc;
-				color: #888;
+				background-color: #C3C3C3;
+				color: #fff;
+				border-right: 1px solid #aaa;
+				border-left: 1px solid #aaa;
 
 				.menu-bar {
 					outline: 0;
@@ -599,8 +605,9 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		}
 	}
 	.keyboard {
-		border: 1px solid #aaa;
-		color: #BDBDBD;
+		border: 1px solid #b3b3b3;
+		color: #9a9a9a;
+		background-color: #fff;
 		display: inline-block;
 		padding: 0px 3px;
 		line-height: 1;
