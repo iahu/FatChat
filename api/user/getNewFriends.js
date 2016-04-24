@@ -4,17 +4,15 @@ module.exports = function (req, res, next) {
 	var params = querystring.parse(req._parsedUrl.query);
 	var uid = +params.uid;
 
-	if ( ! uid ) {
+	if ( !uid ) {
 		return res.responseJSONP({status: 'ok', success: false, msg: 'auth fail or bad arguments'});
 	}
 
 	db.query(
-		'SELECT DISTINCT(id), nickname, avatar FROM users WHERE id IN'
-		+' ('
-			+ ' SELECT friend_id FROM friendship WHERE mutual=1 AND user_id='+uid
-			+ ' UNION'
-			+ ' SELECT user_id FROM friendship WHERE mutual=1 AND friend_id='+uid
-		+' )'
+		'SELECT DISTINCT(users.id), users.nickname, users.avatar FROM users'
+		+' WHERE users.id IN'
+		+ ' (SELECT user_id FROM friendship WHERE mutual=0 AND friend_id='+ uid + ' )'
+
 	, function (err, friends) {
 		if (err) {
 			console.log(err);

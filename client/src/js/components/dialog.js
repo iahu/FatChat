@@ -100,7 +100,7 @@ module.exports = Vue.extend({
 					this.msgList = this.msgList.slice(1 - this.maxsize);
 				}
 			}
-			this.show(); 
+			this.show();
 		},
 		updateMsgList: function (data) {
 			this.msgList = data;

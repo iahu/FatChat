@@ -2,6 +2,8 @@ module.exports = {
 
 	getUserInfo: require('./getUserInfo'),
 	addFriends: require('./addFriends'),
-	processAddRequest: require('./processAddRequest'),
-	getFriends: require('./getFriends')
+	acceptAddRequest: require('./acceptAddRequest'),
+	rejectAddRequest: require('./rejectAddRequest'),
+	getFriends: require('./getFriends'),
+	getNewFriends: require('./getNewFriends')
 };

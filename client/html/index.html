@@ -68,17 +68,9 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<template v-for="friend in friends">
-										<li v-if="friend.mutual" class="clearfix">
-											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
-												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
-												<div class="text">
-													<span class="title">{{friend.nickname}}</span>
-												</div>
-											</a>
-										</li>
-
-										<li v-else class="clearfix add-request">
+									<!-- New Friends -->
+									<template v-for="friend in newFriends">
+										<li class="clearfix add-request">
 											<div class="list-link" @click.stop="toggleClass($index, 'friends')" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 												<div class="text">
@@ -86,14 +78,26 @@
 														<span class="name">{{friend.nickname}}</span> 请求加你好友
 													</div>
 													<div class="action-bar">
-														<button class="accept" @click="processAddRequest('accept', friend.id)">同意</button>
-														<button class="reject" @click="processAddRequest('reject', friend.id)">拒绝</button>
+														<button class="accept" @click="processAddRequest('accept', friend)">同意</button>
+														<button class="reject" @click="processAddRequest('reject', friend)">拒绝</button>
 													</div>
 												</div>
 											</div>
 										</li>
 									</template>
-									<li v-if="totalFriendsCount === 0" class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
+
+									<!-- old Friends -->
+									<template v-for="friend in friends">
+										<li class="clearfix">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
+												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
+												<div class="text">
+													<span class="title">{{friend.nickname}}</span>
+												</div>
+											</a>
+										</li>
+									</template>
+									<li v-if="friends.length === 0" class="empty-tip"><span class="title">你还没有好友，快去添加好友吧</span></li>
 								</ul>
 							</div>
 						</div>
