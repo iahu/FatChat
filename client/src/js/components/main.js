@@ -24,7 +24,14 @@ module.exports = Vue.extend({
 			polling: false,
 			talkingWith: 0,
 			pollTime: 5000,
-			noMsg: true
+			noMsg: true,
+
+			detail_panel_show: false,
+			setting: {
+				nickname_show: false,
+				gender_show: false,
+				about_show: false
+			}
 		};
 	},
 	ready: function () {
@@ -177,6 +184,7 @@ module.exports = Vue.extend({
 		},
 		toggleMenu: function (menu) {
 			this.current_menu = menu;
+			this.detail_panel_show = false;
 		},
 		toggleClass: function (idx, type) {
 			var n = {'sessions': 'sessionsActiveID', 'friends': 'friendsActiveID'};
@@ -188,11 +196,13 @@ module.exports = Vue.extend({
 			this.$dispatch( 'eventFromChild', name, data);
 		},
 		quit: function () {
-			deleteCookie('s');
-			deleteCookie('P0');
-			deleteCookie('P1');
+			if(  confirm('你是否确认要退出 FatChat？') ) {
+				deleteCookie('s');
+				deleteCookie('P0');
+				deleteCookie('P1');
 
-			redirect();
+				redirect();
+			}
 		},
 
 		openMsgDialog: function (toUser) {
@@ -277,6 +287,30 @@ module.exports = Vue.extend({
 					}
 				});
 			}
+		},
+
+		showDetailPanel: function (id) {
+			var key = id + '_show';
+			if ( this.current_menu === 'setting' ) {
+				this.detail_panel_show = true;
+			}
+
+			for (var k in this.setting) {
+				if (this.setting.hasOwnProperty(k)) {
+					if (k === key) {
+						this.setting[k] = true;
+					} else {
+						this.setting[k] = false;
+					}
+				}
+			}
+		},
+
+		updateSetting: function (key) {
+			this.userInfo[key] = this[ 'new_' + key];
+			this.setting[key + '_show'] = false;
+			this.detail_panel_show = false;
+			this.current_menu = 'setting';
 		}
 	},
 	events: {

@@ -106,19 +106,19 @@
 							<div class="panel-inner webkitscrollbar list-panel">
 								<ul class="list-group">
 									<li class="list-item">
-										<a href="#setting/nickname"  data-action="setting.nickname" class="list-link">
+										<a href="javascript:;" @click="showDetailPanel('nickname')" class="list-link">
 											<span class="list-title">昵称</span>
 											<span class="list-detail">{{userInfo.nickname}}</span>
 										</a>
 									</li>
 									<li class="list-item">
-										<a href="#setting/email" data-action="setting.email" class="list-link">
+										<a href="javascript:;" class="list-link">
 											<span class="list-title">帐号(邮箱)</span>
 											<span class="list-detail">{{userInfo.email}}</span>
 										</a>
 									</li>
 									<li class="list-item">
-										<a href="#setting/gender" class="list-link" data-action="gender">
+										<a href="javascript:;" class="list-link" @click="showDetailPanel('gender')">
 											<span class="list-title">性别</span>
 											<span class="list-detail">{{userInfo.gender | genderFilter}}</span>
 										</a>
@@ -127,19 +127,59 @@
 
 								<ul class="list-group">
 									<li class="list-item">
-										<a href="#setting/about" class="list-link" data-action="about">
+										<a href="javascript:;" class="list-link" @click="showDetailPanel('about')">
 											<span class="list-title">关于</span>
 										</a>
 									</li>
 								</ul>
 
-								<ul class="list-group">
-									<li class="list-item">
-										<a href="#setting/quit" class="list-link" @click="quit">
-											<span class="list-title">退出</span>
-										</a>
-									</li>
-								</ul>
+								<div class="list-btn-group">
+									<a href="#setting/quit" class="list-button btn quit-btn" @click="quit">退出</a>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel-body detail-panel" v-if="detail_panel_show" transition="slideInLeft">
+							<div class="panel-inner webkitscrollbar list-panel">
+								<form v-if="setting.nickname_show" @submit.prevent="updateSetting('nickname')">
+									<div class="list-group form-group">
+										<input type="text" v-model="new_nickname" :value="userInfo.nickname">
+									</div>
+									<div class="list-btn-group">
+										<button type="submit" class="list-button btn">确认</button>
+									</div>
+								</form>
+								<form v-if="setting.gender_show" @submit.prevent="updateSetting('gender')">
+									<div class="list-group">
+										<div class="form-group list-item">
+											<label>
+												<input type="radio" name="new_gender" :checked="userInfo.gender == 1" v-model="new_gender" :value="1"> 男
+											</label>
+										</div>
+										<div class="form-group list-item">
+											<label>
+												<input type="radio" name="new_gender" :checked="userInfo.gender == 2" v-model="new_gender" :value="2"> 女
+											</label>
+										</div>
+										<div class="form-group list-item">
+											<label>
+												<input type="radio" name="new_gender" :checked="userInfo.gender == 3" v-model="new_gender" :value="3"> 其他
+											</label>
+										</div>
+									</div>
+										
+									<div class="list-btn-group">
+										<button type="submit" class="list-button btn">确认</button>
+									</div>
+								</form>
+								<div v-if="setting.about_show">
+									<h3>关于 FatChat</h3>
+									<p>肥聊是一款每居家旅行，在线约会聊天必备的在线聊天即时工具。</p>
+
+									<div class="list-btn-group" @click="toggleMenu('setting')">
+										<button type="submit" class="list-button btn">确认</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
