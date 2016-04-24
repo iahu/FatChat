@@ -18,10 +18,12 @@ module.exports = function (req, res) {
 			}
 
 			db.query(
-				'UPDATE friendship SET mutual=1'+
-				' WHERE mutual=0 AND (user_id='+db.escape(params.friend_id) +
-				' AND friend_id='+db.escape(params.uid) + ')',
-			function (err) {
+				'UPDATE friendship SET mutual=1'
+				+ ' WHERE '
+				+ ' ( mutual=0 AND user_id='+db.escape(params.friend_id) +' AND friend_id=' + db.escape(params.uid) + ')'
+				+ ' OR'
+				+ ' (  mutual=0 AND friend_id='+db.escape(params.friend_id) +' AND user_id=' + db.escape(params.uid) + ')'
+			, function (err) {
 				if (err) {
 					console.log(err);
 					res.responseJSONP({success: false, msg: 'server error'});

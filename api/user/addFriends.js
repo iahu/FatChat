@@ -20,7 +20,7 @@ module.exports = function (req, res, next) {
 
 		if (body && body.length) {
 			values = ids.map(function (id) {
-				return '(' + db.escape(uid) + ', ' + db.escape(id) +')';
+				return '(' + [db.escape(uid), db.escape(id)].join(', ') +')';
 			}).join(',');
 			db.query('INSERT IGNORE INTO friendship(user_id, friend_id) VALUES' + values,
 				function (err, body) {

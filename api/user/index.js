@@ -5,5 +5,5 @@ module.exports = {
 	acceptAddRequest: require('./acceptAddRequest'),
 	rejectAddRequest: require('./rejectAddRequest'),
 	getFriends: require('./getFriends'),
-	getNewFriends: require('./getNewFriends')
+	getAddRequest: require('./getAddRequest')
 };
