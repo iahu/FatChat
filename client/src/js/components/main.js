@@ -15,7 +15,8 @@ module.exports = Vue.extend({
 			friendsActiveID: -1,
 			current_menu: 'session',
 			friends: '',
-			newFriends: '',
+			lastFriendCreattime: '',
+			unknowFriends: '',
 			msgList: '',
 			userInfo: '',
 			show_main: false,
@@ -29,13 +30,20 @@ module.exports = Vue.extend({
 	ready: function () {
 		var self = this;
 		this.getUserInfoData();
-		this.getFriendsData().then(this.getSessionsData).then(this.poll);
-		
-		this.getNewFriends().then(function () {
+		this.getFriendsData().then(function () {
+			this.getSessionsData();
+			this.poll();
+
+			// getFriendsData  1/60s
 			setInterval(function () {
-				self.getNewFriends.call();
-			}, 30000);
-		})
+				self.getFriendsData.call(self);
+			}, 60000);
+		});
+
+		// 1/30s
+		setInterval(function () {
+			self.getAddRequest.call(self);
+		}, 30000);
 	},
 	computed: {
 		sessions: function () {
@@ -113,29 +121,35 @@ module.exports = Vue.extend({
 			.then(function (res) {
 				res = res.data;
 				if (res && res.success) {
+					if ( res.msg.length ) {
+						var data = _.orderBy(res.msg, function (o) {
+							return o.createtime;
+						}).last();
+						this.lastFriendCreattime = data.createtime;
+					}
 					this.friends = res.msg;
 				}
 			});
 		},
-		getNewFriends: function () {
+		getAddRequest: function () {
 			return this.$http({
-				url: '/api/user/getNewFriends',
+				url: '/api/user/getAddRequest',
 				method: 'get',
 				dataType: 'json',
-				data: {uid: uid}
-			})
-			.then(function (res) {
+				data: {
+					uid: uid
+				}
+			}).then(function (res) {			
 				var self = this;
 				res = res.data;
 				if (res && res.success && res.msg.length) {
-					this.newFriends = this.newFriends || {};
-					_.forEach(res.msg, function (o, i) {
-						self.newFriends[o.id] = o;
-					});
+					this.unknowFriends = this.unknowFriends || {};
 
-					// console.log(this.newFriends);
+					_.forEach(res.msg, function (o, i) {
+						self.unknowFriends[o.id] = o;
+					});
 				}
-			});
+			})
 		},
 		_getSessions: function (data) {
 			return this.$http({
@@ -256,8 +270,8 @@ module.exports = Vue.extend({
 								this.getSessionsData().then(this.poll);
 							}
 						}
-						// remove friend from newFriends anyway
-						this.newFriends = _.filter(this.newFriends, function (o) {
+						// remove friend from unknowFriends anyway
+						this.unknowFriends = _.filter(this.unknowFriends, function (o) {
 							return o.id !== id;
 						});
 					}

@@ -68,8 +68,8 @@
 						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
-									<!-- New Friends -->
-									<template v-for="friend in newFriends">
+									<!-- Unknow Friends -->
+									<template v-for="friend in unknowFriends">
 										<li class="clearfix add-request">
 											<div class="list-link" @click.stop="toggleClass($index, 'friends')" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
