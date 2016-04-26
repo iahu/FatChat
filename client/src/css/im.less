@@ -1,6 +1,8 @@
 @import (less) './lib/normalize.css';
 @import './less/modal.less';
 @import './less/list.less';
+@import (less) './qqface.css';
+
 
 .fade-transition {
 	-webkit-transition: all 1s ease-out;
@@ -494,6 +496,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 	// height: 480px;
 	
 	.im {
+		position: relative;
 		border: 1px solid #ccc;
 		box-shadow: 0 0 9px rgba(25, 25, 25, 0.3);
 	}
@@ -648,6 +651,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			background: url('/img/out.png') no-repeat;
 			text-indent: -99px;
 			overflow: hidden;
+			outline: 0;
 
 			&.emoji {
 				background-position: 0px 2px;
@@ -711,6 +715,30 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		line-height: 1;
 		font-size: 12px;
 		border-radius: 2px;
+	}
+
+	.qqface-panel {
+		position: absolute;
+		bottom: 150px;
+		background-color: #fff;
+		padding: 10px;
+		left: 5px;
+		border: 1px solid #cfcfcf;
+
+		&:before,
+		&:after {
+			content: '';
+			position: absolute;
+			left: 16px;
+			top: 100%;
+			margin-left: -7px;
+			border: 7px solid transparent;
+			border-top-color: #CFCFCF;
+		}
+		&:after {
+			border-top-color: #fff;
+			margin-top: -1px;
+		}
 	}
 }
 

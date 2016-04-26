@@ -1,5 +1,4 @@
 var Vue = require('../lib/vue.min.js'),
-	getCookie = require('../lib/getCookie.js'),
 	deleteCookie = require('../lib/deleteCookie.js'),
 	redirect = require('../lib/redirect.js'),
 	getP1 = require('../lib/getP1.js'),

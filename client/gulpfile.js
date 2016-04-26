@@ -106,6 +106,7 @@ gulp.task('default', ['clean', 'build-css', 'build-js']);
 
 // watch task
 gulp.task('watch', function () {
+	var watcheSASS = gulp.watch('./src/css/**/*.css', ['build-css']);
 	var watcheSASS = gulp.watch('./src/css/**/*.scss', ['build-css']);
 	var watcherLESS = gulp.watch('./src/css/**/*.less', ['build-css']);
 	var watcherJS = gulp.watch('./src/js/**/*.js', ['build-js']);

@@ -1,10 +1,23 @@
 var Vue = require('../lib/vue.min.js');
 var getP1 = require('../lib/getP1.js');
 var uid = getP1().uid;
+var _ = require('../lib/lodash.js');
+var qqfaceData = require('../qqface.json');
 
 function scrollToBottom(el) {
 	el.scrollTop = el.scrollHeight;
 }
+
+Vue.filter('qqface', function (msg) {
+	return _.escape(msg).replace(/\[([^\[\]]+)\]/g, function ($0, $1) {
+		var idx = qqfaceData.indexOf($1);
+		if ( idx >= 0) {
+			return '<img width="24" height="24" class="qqface" src="/img/qqface/'+idx+'.gif" alt="'+$1+'" />';
+		} else {
+			return  $0;
+		}
+	});
+});
 
 module.exports = Vue.extend({
 	template: '#im-tpl',
@@ -13,8 +26,10 @@ module.exports = Vue.extend({
 		return {
 			fromUser: {},
 			toUser: {},
-			visibility: false,
 			msgList: [],
+			qqfaceData: qqfaceData,
+			qqfacePanelShow: false,
+			visibility: false,
 			polling: false,
 			sending: false
 		};
@@ -40,20 +55,22 @@ module.exports = Vue.extend({
 		},
 		send: function (event) {
 			var self = this,
-				id = self.toUser.id,
-				msgData;
+			qqfaceData = this.qqfaceData,
+			id = self.toUser.id,
+			msg = this.msg,
+			msgData;
 			if (event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
 				return false;
 			}
 
-			if (!this.msg) {
+			if (!msg) {
 				return false;
 			}
-			if ( this.msg.length > 200 ) {
+			if ( msg.length > 200 ) {
 				return false;
 			}
 
-			msgData = {body: this.msg, to: id, from: uid };
+			msgData = {body: msg, to: id, from: uid };
 			if (this.sending) {
 				setTimeout(function() {
 					self._send.call(this, msgData);
@@ -87,6 +104,17 @@ module.exports = Vue.extend({
 			} else {
 				console.log('发送失败');
 			}
+		},
+
+		showQQFacePanel: function () {
+			this.qqfacePanelShow = true;
+		},
+		hideQQFacePanel: function () {
+			this.qqfacePanelShow = false;
+		},
+		pickQQFacePanel: function (idx) {
+			this.hideQQFacePanel();
+			this.msg += ( '['+ this.qqfaceData[idx] + ']' );
 		}
 	},
 	events: {

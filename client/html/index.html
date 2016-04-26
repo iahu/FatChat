@@ -188,7 +188,7 @@
 		</div>
 	</script>
 	<script type="text/x-teplate" id="im-tpl">
-		<div class="im-wrapper" v-show="visibility">
+		<div class="im-wrapper" v-show="visibility" @click="hideQQFacePanel">
 			<div class="im">
 				<div class="im-top-bar clearfix">
 					<span class="avatar fl-l"><img v-if="toUser.avatar" :src="'/img/avatar/' + toUser.avatar" alt="{{toUser.nickname}}"></span>
@@ -213,7 +213,7 @@
 											<div class="avatar">
 												<img :src="'img/avatar/'+ fromUser.avatar" alt="{{fromUser.nickname}}">
 											</div>
-											<p class="im-msg-bd">{{msg.body}}</p>
+											<p class="im-msg-bd">{{{msg.body | qqface}}}</p>
 										</div>
 									</template>
 									<template v-else>
@@ -233,7 +233,7 @@
 				
 						<div class="im-input-wrapper">
 							<div class="im-input-toolbar">
-								<button class="im-tb emoji btn-plaint">表情</button>
+								<button class="im-tb emoji btn-plaint" @click.prevent.stop="showQQFacePanel">表情</button>
 								<button class="im-tb photo btn-plaint">图片</button>
 							</div>
 				
@@ -257,6 +257,13 @@
 					</div>
 				
 					<div class="im-bd-right">af</div>
+				</div>
+
+
+				<div class="qqface-panel" v-show="qqfacePanelShow">
+					<div class="qq_face">
+						<a href="javascript:;" class="face"  v-for="face in qqfaceData" :class="'qqface'+$index" :title="face" @click.prevent="pickQQFacePanel($index)">{{face}}</a>
+					</div>
 				</div>
 			</div>
 		</div>
