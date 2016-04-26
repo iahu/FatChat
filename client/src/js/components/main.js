@@ -82,12 +82,13 @@ module.exports = Vue.extend({
 							return +m.to === +uid && m.read === 0;
 						}).length;
 					}
-
+					// friend has createtime
 					data.push(_.assign({
 							unreadCount: unreadCount
-						}, last, friend));
+						}, friend, last));
 				}
 			});
+
 			// return data;
 			return _.orderBy(data, 'createtime', 'desc');
 		},

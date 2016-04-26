@@ -43,8 +43,8 @@
 								<!-- 历史会话列表 -->
 								<ul class="session-list">
 									<template v-if="lastMsgList.length" v-for="s in lastMsgList">
-										<li class="clearfix" :class="{active: sessionsActiveID == $index}">
-											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')"  @dblclick="openMsgDialog(s)">
+										<li class="clearfix">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'sessions')" @focus="toggleClass($index, 'sessions')"  @dblclick="openMsgDialog(s)" @keyup.enter="openMsgDialog(s)" :class="{active: sessionsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+s.avatar" alt="{{s.nickname}}"></span>
 												<div class="text">
 													<div>
@@ -71,7 +71,7 @@
 									<!-- Unknow Friends -->
 									<template v-for="friend in unknowFriends">
 										<li class="clearfix add-request">
-											<div class="list-link" @click.stop="toggleClass($index, 'friends')" :class="{active: friendsActiveID == $index}">
+											<div class="list-link" @click.stop="toggleClass($index, 'friends')" @focus="toggleClass($index, 'friends')" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 												<div class="text">
 													<div class="title">
@@ -89,7 +89,7 @@
 									<!-- old Friends -->
 									<template v-for="friend in friends">
 										<li class="clearfix">
-											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
+											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" @keyup.enter="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 												<div class="text">
 													<span class="title">{{friend.nickname}}</span>

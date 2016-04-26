@@ -12,7 +12,8 @@ Vue.filter('qqface', function (msg) {
 	return _.escape(msg).replace(/\[([^\[\]]+)\]/g, function ($0, $1) {
 		var idx = qqfaceData.indexOf($1);
 		if ( idx >= 0) {
-			return '<img width="24" height="24" class="qqface" src="/img/qqface/'+idx+'.gif" alt="'+$1+'" />';
+			return '<img width="24" height="24" class="qqface" src="/img/qqface/'
+				+idx+'.gif" alt="'+$1+'" title="'+$1+'" />';
 		} else {
 			return  $0;
 		}
@@ -49,7 +50,7 @@ module.exports = Vue.extend({
 		show: function () {
 			this.visibility = true;
 		},
-		hide: function () {
+		hide: function (event) {
 			this.visibility = false;
 			this.$dispatch('eventFromChild', 'dialogClosed');
 		},

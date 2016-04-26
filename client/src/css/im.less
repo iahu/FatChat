@@ -356,7 +356,8 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 
 		.session-list,
 		.friends-list {
-			> li {
+			.list-link {
+				display: block;
 				border-bottom: 1px solid #eee;
 				padding: 8px 10px;
 				color: #333;
@@ -563,6 +564,10 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			padding: 6px 10px;
 			border-radius: 10px;
 			margin: 10px 5px;
+
+			.qqface {
+				vertical-align: middle;
+			}
 		}
 
 
@@ -707,9 +712,9 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		}
 	}
 	.keyboard {
-		border: 1px solid #b3b3b3;
-		color: #9a9a9a;
-		background-color: #fff;
+		border: 1px solid #CACACA;
+		color: #949494;
+		background-color: #E8E8E8;
 		display: inline-block;
 		padding: 1px 3px;
 		line-height: 1;
