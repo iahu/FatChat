@@ -146,14 +146,15 @@ module.exports = Vue.extend({
 			var msgData = {body: msg, type: 'img', to:  self.toUser.id, from: uid };
 			var callback = function (res) {
 				if ( res && res.data && res.data.success) {
-					this.dialogTips = '图片上传成功...';
+					this.dialogTips = '';
 				} else {
 					this.dialogTips = '图片上传失败...';
+					
+					setTimeout(function () {
+						self.dialogTips = '';
+					}, 3000);
 				}
 
-				setTimeout(function () {
-					self.dialogTips = '';
-				}, 3000);
 			};
 
 			if (this.sending) {

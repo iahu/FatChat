@@ -3154,7 +3154,7 @@ var expression = Object.freeze({
       }
     }
     // two-way sync for v-for alias
-    var forContext = scope.$forContext;
+    var forContext = scope && scope.$forContext;
     if (forContext && forContext.alias === this.expression) {
       if (forContext.filters) {
         'development' !== 'production' && warn('It seems you are using two-way binding on ' + 'a v-for alias (' + this.expression + '), and the ' + 'v-for has filters. This will not work properly. ' + 'Either remove the filters or use an array of ' + 'objects and bind to object properties instead.', this.vm);

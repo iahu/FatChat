@@ -38,7 +38,7 @@
 				</div>
 				<div class="main-body">
 					<div class="panel-group">
-						<div class="panel-body session" v-show="current_menu === 'session'" :transition="panelTransition">
+						<div class="panel-body session" v-if="current_menu === 'session'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'sessions')">
 								<!-- 历史会话列表 -->
 								<ul class="session-list">
@@ -66,7 +66,7 @@
 							</div>
 						</div>
 
-						<div class="panel-body friends" v-show="current_menu === 'friends'" :transition="panelTransition">
+						<div class="panel-body friends" v-if="current_menu === 'friends'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
 									<!-- Unknow Friends -->
@@ -103,7 +103,7 @@
 							</div>
 						</div>
 
-						<div class="panel-body setting" v-show="current_menu === 'setting'" :transition="panelTransition">
+						<div class="panel-body setting" v-if="current_menu === 'setting'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar list-panel">
 								<ul class="list-group">
 									<li class="list-item">
