@@ -28,6 +28,8 @@ module.exports = Vue.extend({
 			fromUser: {},
 			toUser: {},
 			msgList: [],
+			dialogTips: '',
+			ifrup: '',
 			qqfaceData: qqfaceData,
 			qqfacePanelShow: false,
 			visibility: false,
@@ -60,7 +62,7 @@ module.exports = Vue.extend({
 			id = self.toUser.id,
 			msg = this.msg,
 			msgData;
-			if (event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
+			if (event && event.type === 'keydown' && this.usesCtrlKey && !event.ctrlKey) {
 				return false;
 			}
 
@@ -74,11 +76,23 @@ module.exports = Vue.extend({
 			msgData = {body: msg, to: id, from: uid };
 			if (this.sending) {
 				setTimeout(function() {
-					self._send.call(this, msgData);
+					self._send.call(this, msgData).then(function (res) {
+						if ( res.data.success ) {
+							msgData.createtime = res.data.msg.createtime;
+							msgData.read = 1;
+							msgData.type = msgData.type === 'img' ? 2 : 1;
+							this.msgList.push(msgData);
+							this.$dispatch('eventFromChild', 'updateMsgFromDialog', msgData);
+						} else {
+							console.log('发送失败');
+						}
+						this.sending = false;
+					});
 				}, 1000);
 			} else {
-				this._send(msgData);
+				this._send(msgData).then(this._afterSend);
 			}
+			this.msg = '';
 		},
 		_send: function (msgData) {
 			return this.$http({
@@ -86,25 +100,7 @@ module.exports = Vue.extend({
 				dataType: 'json',
 				method: 'POST',
 				data: msgData
-			}).then(this._afterSend).then(function () {
-				this.sending = false;
 			});
-		},
-		_afterSend: function (data) {
-			var msgData = {body: this.msg, to: this.toUser.to, from: uid };
-			data = data.data;
-			if (data.status == 'ok' && data.success) {
-				this.msg = '';
-
-				msgData.createtime = data.msg.createtime;
-				msgData.toUser = this.toUser;
-				msgData.fromUser = this.fromUser;
-				msgData.read = 1;
-				this.msgList.push(msgData);
-				this.$dispatch('eventFromChild', 'updateMsgFromDialog', msgData);
-			} else {
-				console.log('发送失败');
-			}
 		},
 
 		showQQFacePanel: function () {
@@ -116,6 +112,56 @@ module.exports = Vue.extend({
 		pickQQFacePanel: function (idx) {
 			this.hideQQFacePanel();
 			this.msg += ( '['+ this.qqfaceData[idx] + ']' );
+		},
+
+		filechanged: function (e) {
+			e.target.form.submit();
+			this.dialogTips = '正在上传图片...';
+		},
+
+		fileuploadComplete: function (e) {
+			var ifr = e.target;
+			var text = ifr.contentDocument.body.innerText;
+			var data;
+			if ( ! text ) {
+				return;
+			}
+
+			try {
+				data = JSON.parse(text);
+				this.sendImage(data.path);
+				this.ifrup = '';
+			} catch(e) {
+				console.log(e);
+			}
+		},
+
+		sendImage: function (msg) {
+			if (!msg) {
+				return;
+			}
+			var self = this;
+			var msgData = {body: msg, type: 'img', to:  self.toUser.id, from: uid };
+			var callback = function (res) {
+				if ( res && res.data && res.data.success) {
+					this.dialogTips = '图片上传成功...';
+				} else {
+					this.dialogTips = '图片上传失败...';
+				}
+
+				setTimeout(function () {
+					self.dialogTips = '';
+				}, 3000);
+			};
+
+			if (this.sending) {
+				setTimeout(function() {
+					self._send.call(this, msgData).then(callback);
+				}, 1000);
+			} else {
+				this._send(msgData).then(callback);
+			}
+			this.dialogTips = '';
 		}
 	},
 	events: {

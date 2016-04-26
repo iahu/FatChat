@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
 		return res.responseJSONP({success: false, msg: 'bad params'});
 	}
 
-	db.query('SELECT createtime, body, `from`, `to`, `read`'+
+	db.query('SELECT createtime, body, `from`, `to`, `read`, `type`'+
 		' FROM sessions'+
 		' WHERE (`from`='+ uid + ' OR `to`=' + uid + ')'+
 		( lasttime ? ' AND createtime > ' + lasttime : '' ) +

@@ -16,6 +16,7 @@
     "gulp": "^3.9.1",
     "handlebars": "^4.0.5",
     "lodash.values": "^4.1.0",
+    "multiparty": "^4.1.2",
     "mysql": "^2.10.2",
     "nano": "^6.2.0",
     "request": "^2.71.0",

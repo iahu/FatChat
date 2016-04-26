@@ -176,7 +176,9 @@ module.exports = Vue.extend({
 			.then(function(res) {
 				var data = res.data;
 				if (data && !data.errno) {
-					this.$set('msgList', data );
+					if ( data.length ) {
+						this.$set('msgList', data );
+					}
 				} else {
 					this.$set('msgList', []);
 				}

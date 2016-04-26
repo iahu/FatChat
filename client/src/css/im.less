@@ -384,7 +384,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 
 			.avatar {
-				display: table-cell;
+				display: inline-block;
 				vertical-align: middle;
 			}
 
@@ -407,8 +407,8 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 
 			.text {
-				display: table-cell;
-				width: 100%;
+				display: inline-block;
+				width: 180px;
 				font-size: 14px;
 				padding: 0 0 0 10px;
 				color: #333;
@@ -527,6 +527,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		position: relative;
 	}
 	.im-bd-left {
+		position: relative;
 		background-color: #f2f2f2;
 		margin-right: 180px;
 	}
@@ -534,6 +535,20 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		height: 280px;
 		padding: 12px;
 		overflow-y: auto;
+	}
+
+	.dialog-tips {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 9;
+		width: 100%;
+		background-color: #ffc;
+		color: #FD6A21;
+
+		.tip-body {
+			padding: 3px;
+		}
 	}
 
 	.top-tips {
@@ -570,6 +585,11 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			}
 		}
 
+		.img-msg {
+			max-width: 200px;
+			max-height: 200px;
+		}
+
 
 		&.received {
 			float: left;
@@ -578,11 +598,11 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				position: relative;
 				background-color: #ccc;
 				color: #333;
-				margin: 0 0 0 10px;
+				margin:  0 0 0 10px;
 
 				&:before {
 					margin-top: 5px;
-					bottom: 6px;
+					top: 6px;
 					left: -6px;
 					content: ' ';
 					position: absolute;
@@ -606,7 +626,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				margin: 0 10px 0 0;
 
 				&:after {
-					bottom: 6px;
+					top: 6px;
 					right: -6px;
 					content: ' ';
 					position: absolute;
@@ -662,7 +682,17 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				background-position: 0px 2px;
 			}
 			&.photo {
+				position: relative;
 				background-position: -24px 2px;
+			}
+
+			#ifrup {
+				position: absolute;
+				left: 0;
+				top: 0;
+				font-size: 100px;
+				opacity: 0;
+				filter: alpha(opacity=0);
 			}
 		}
 	}

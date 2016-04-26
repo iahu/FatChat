@@ -52,7 +52,8 @@
 														<span class="ts">{{s.createtime | getDateString}}</span>
 													</div>
 													<span class="body">
-														{{s.body}}
+														<template v-if="s.type == 2">[图片]</template>
+														<template v-else>{{s.body}}</template>
 														<span class="unread-count" v-show="s.unreadCount">{{s.unreadCount}}</span>
 													</span>
 												</div>
@@ -199,6 +200,7 @@
 				<div class="im-bd">
 					<div class="im-bd-left">
 						<div class="im-msg-list-box webkitscrollbar" id="ps">
+							<div class="dialog-tips" v-if="dialogTips"><div class="tip-body">{{dialogTips}}</div></div>
 							<ul class="im-msg-list clearfix" v-if="msgList.length">
 								<li class="top-tips" v-if="msgList.length >= maxsize-1">
 									<span class="tip-body">默认最多显示{{maxsize}}条历史消息</span>
@@ -213,7 +215,8 @@
 											<div class="avatar">
 												<img :src="'img/avatar/'+ fromUser.avatar" alt="{{fromUser.nickname}}">
 											</div>
-											<p class="im-msg-bd">{{{msg.body | qqface}}}</p>
+											<p class="im-msg-bd" v-if="msg.type==1">{{{msg.body | qqface}}}</p>
+											<p class="im-msg-bd" v-if="msg.type==2"><img class="img-msg" :src="msg.body" alt="图片"></p>
 										</div>
 									</template>
 									<template v-else>
@@ -224,7 +227,8 @@
 											<div class="avatar">
 												<img :src="'img/avatar/'+ toUser.avatar" alt="{{toUser.nickname}}">
 											</div>
-											<p class="im-msg-bd">{{msg.body}}</p>
+											<p class="im-msg-bd" v-if="msg.type==1">{{{msg.body | qqface}}}</p>
+											<p class="im-msg-bd" v-if="msg.type==2"><img class="img-msg" :src="msg.body" alt="图片"></p>
 										</div>
 									</template>
 								</li>
@@ -234,7 +238,13 @@
 						<div class="im-input-wrapper">
 							<div class="im-input-toolbar">
 								<button class="im-tb emoji btn-plaint" @click.prevent.stop="showQQFacePanel">表情</button>
-								<button class="im-tb photo btn-plaint">图片</button>
+								<button class="im-tb photo btn-plaint">图片
+									<form action="/api/fileupload" method="POST" target="ifrup" enctype="multipart/form-data">
+										<input type="file" name="ifrup" id="ifrup" v-model="ifrup" accept="image/*" @change="filechanged($event)">
+									</form>
+									<iframe @load="fileuploadComplete($event)" style="display: none;" frameborder="0" name="ifrup" id="ifrup">
+									</iframe>
+								</button>
 							</div>
 				
 							<div class="im-input-box">

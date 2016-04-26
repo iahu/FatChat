@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="UTF-8">
+</head>
+<body>
+<script>
+(function(){
+	try{
+		var searchList = window.location.search.substr(1).split('&'),
+			params = {},
+			root = window.parent.parent,
+			li;
+
+		for (var i = 0; i < searchList.length; i++) {
+			var a = searchList[i].split('=');
+			params[ a[0] ] = decodeURIComponent(a[1]);
+		}
+		li = params.callback.split(".");
+		if (window == root) { return; }
+		var nObj = new Function("return " + params.data)();
+		while(li.length){
+			root = root[li.shift()];
+		}
+		root(nObj);
+	} catch(e) {
+		if ( typeof root === 'function' ) {
+			root(e);
+		}
+	}
+})();	
+</script>
+</body></html>

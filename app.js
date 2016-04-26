@@ -12,6 +12,7 @@ var makeSessionID = require('./lib/makeSessionID.js');
 var Actions = require('./action/');
 var APIs = {
 	searchFriends: require('./api/searchFriends.js'),
+	fileupload: require('./api/fileupload.js'),
 	message: require('./api/message/'),
 	user: require('./api/user/')
 };
@@ -24,6 +25,7 @@ app.use(routes);
 app.use( serveStatic(__dirname + '/client/prd') );
 app.use( serveStatic(__dirname + '/client/html') );
 app.use( serveStatic(__dirname + '/client/img') );
+app.use( serveStatic(__dirname + '/fileupload') );
 
 
 function routes(req, res, next) {
