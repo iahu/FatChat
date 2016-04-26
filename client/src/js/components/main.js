@@ -1,4 +1,4 @@
-var Vue = require('../lib/vue.min.js'),
+var Vue = require('../lib/vue.js'),
 	deleteCookie = require('../lib/deleteCookie.js'),
 	redirect = require('../lib/redirect.js'),
 	getP1 = require('../lib/getP1.js'),
@@ -25,12 +25,17 @@ module.exports = Vue.extend({
 			pollTime: 5000,
 			noMsg: true,
 
+			panelTransition: 'slideInLeft',
+			detailTransition: 'slideInLeft',
+
 			detail_panel_show: false,
 			setting: {
 				nickname_show: false,
 				gender_show: false,
 				about_show: false
-			}
+			},
+			new_nickname: '',
+			new_gender: ''
 		};
 	},
 	ready: function () {
@@ -186,7 +191,6 @@ module.exports = Vue.extend({
 		},
 		toggleMenu: function (menu) {
 			this.current_menu = menu;
-			this.detail_panel_show = false;
 		},
 		toggleClass: function (idx, type) {
 			var n = {'sessions': 'sessionsActiveID', 'friends': 'friendsActiveID'};
@@ -293,7 +297,11 @@ module.exports = Vue.extend({
 
 		showDetailPanel: function (id) {
 			var key = id + '_show';
+			this.panelTransition = 'slideInLeft';
+			this.detailTransition = 'slideInLeft';
+
 			if ( this.current_menu === 'setting' ) {
+				this.current_menu = 'detailPanel';
 				this.detail_panel_show = true;
 			}
 
@@ -309,10 +317,33 @@ module.exports = Vue.extend({
 		},
 
 		updateSetting: function (key) {
-			this.userInfo[key] = this[ 'new_' + key];
-			this.setting[key + '_show'] = false;
-			this.detail_panel_show = false;
+			var self = this;
+			var value = this['new_' + key];
+			var oldValue = this[key];
+
+			this.panelTransition = 'slideInRight';
+			this.detailTransition = 'slideInRight';
+
 			this.current_menu = 'setting';
+			this.detail_panel_show = false;
+
+			if ( this.userInfo.hasOwnProperty(key) && value && value !== oldValue ) {
+				this.$http({
+					url: '/api/user/updateUserInfo',
+					method: 'POST',
+					data: {
+						uid: uid,
+						key: key,
+						value: value
+					}
+				}).then(function (res) {
+					if ( res && res.data && res.data.success ) {
+						this.userInfo[key] = value;
+					} else {
+						this.userInfo[key] = oldValue;
+					}
+				});
+			}
 		}
 	},
 	events: {

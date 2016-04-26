@@ -1,4 +1,4 @@
-var Vue = require('../lib/vue.min.js');
+var Vue = require('../lib/vue.js');
 var getP1 = require('../lib/getP1.js');
 var uid = getP1().uid;
 var _ = require('../lib/lodash.js');
@@ -74,26 +74,28 @@ module.exports = Vue.extend({
 			}
 
 			msgData = {body: msg, to: id, from: uid };
+			function afterSend(res) {
+				if ( res.data.success ) {
+					msgData.createtime = res.data.msg.createtime;
+					msgData.read = 1;
+					msgData.type = msgData.type === 'img' ? 2 : 1;
+					this.msgList.push(msgData);
+					this.$dispatch('eventFromChild', 'updateMsgFromDialog', msgData);
+				} else {
+					console.log('发送失败');
+				}
+				this.sending = false;
+			}
 			if (this.sending) {
 				setTimeout(function() {
-					self._send.call(this, msgData).then(function (res) {
-						if ( res.data.success ) {
-							msgData.createtime = res.data.msg.createtime;
-							msgData.read = 1;
-							msgData.type = msgData.type === 'img' ? 2 : 1;
-							this.msgList.push(msgData);
-							this.$dispatch('eventFromChild', 'updateMsgFromDialog', msgData);
-						} else {
-							console.log('发送失败');
-						}
-						this.sending = false;
-					});
+					self._send.call(this, msgData).then(afterSend);
 				}, 1000);
 			} else {
-				this._send(msgData).then(this._afterSend);
+				this._send(msgData).then(this._afterSend).then(afterSend);
 			}
 			this.msg = '';
 		},
+
 		_send: function (msgData) {
 			return this.$http({
 				url: '/api/message/send',

@@ -1,4 +1,4 @@
-var Vue = require('./lib/vue.min.js'),
+var Vue = require('./lib/vue.js'),
 	vueResource = require('./lib/vue-resource.min.js'),
 
 	getCookie = require('./lib/getCookie.js'),

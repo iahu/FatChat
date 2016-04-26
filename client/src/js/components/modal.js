@@ -1,4 +1,4 @@
-var Vue = require('../lib/vue.min.js');
+var Vue = require('../lib/vue.js');
 var searchFriendsComp = require('./searchFriends.js');
 module.exports = Vue.extend({
 	template: '#modal-tpl',

@@ -4,9 +4,7 @@ var signupPage = document.getElementById('sginup-page').className.indexOf('is-si
 var msg = signupPage? getCookie('signupMsg') : getCookie('signinMsg');
 var formData = parserQuery(decodeURIComponent(getCookie('formData')));
 
-var Vue = require('./lib/vue.min.js');
-var VueValidator = require('./lib/vue-validator.min.js');
-Vue.use(VueValidator);
+var Vue = require('./lib/vue.js');
 
 Vue.filter('validator', function () {
 	console.log(arguments);

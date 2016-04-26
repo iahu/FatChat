@@ -1,4 +1,4 @@
-var Vue = require('../lib/vue.min.js'),
+var Vue = require('../lib/vue.js'),
 	getP1 = require('../lib/getP1.js'),
 	uid = getP1().uid;
 

@@ -7,7 +7,7 @@
 </head>
 <body>
 	<div class="container" id="im">
-		<im-main v-on:show-modal="showModal" v-on:event-from-child="eventFromChild"></im-main>
+		<im-main></im-main>
 		<im-dialog maxsize="100"></im-dialog>
 		<im-modal :arg="modalData"></im-modal>
 	</div>
@@ -33,12 +33,12 @@
 					<ul class="menu-list">
 						<li @click="toggleMenu('session')" class="menu-item" :class="{active: current_menu === 'session'}"><button class="menu-bar">会话</button></li>
 						<li @click="toggleMenu('friends')" class="menu-item" :class="{active: current_menu === 'friends'}"><button class="menu-bar">好友</button></li>
-						<li @click="toggleMenu('setting')" class="menu-item" :class="{active: current_menu === 'setting'}"><button class="menu-bar">设置</button></li>
+						<li @click="toggleMenu('setting')" class="menu-item" :class="{active: current_menu === 'setting' || current_menu === 'detailPanel'}"><button class="menu-bar">设置</button></li>
 					</ul>
 				</div>
 				<div class="main-body">
 					<div class="panel-group">
-						<div class="panel-body session" v-show="current_menu === 'session'" transition="slideInLeft">
+						<div class="panel-body session" v-show="current_menu === 'session'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'sessions')">
 								<!-- 历史会话列表 -->
 								<ul class="session-list">
@@ -66,7 +66,7 @@
 							</div>
 						</div>
 
-						<div class="panel-body friends" v-show="current_menu === 'friends'" transition="slideInLeft">
+						<div class="panel-body friends" v-show="current_menu === 'friends'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar" @click="toggleClass('-1', 'friends')">
 								<ul class="friends-list">
 									<!-- Unknow Friends -->
@@ -103,25 +103,35 @@
 							</div>
 						</div>
 
-						<div class="panel-body setting" v-show="current_menu === 'setting'" transition="slideInLeft">
+						<div class="panel-body setting" v-show="current_menu === 'setting'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar list-panel">
 								<ul class="list-group">
 									<li class="list-item">
 										<a href="javascript:;" @click="showDetailPanel('nickname')" class="list-link">
 											<span class="list-title">昵称</span>
-											<span class="list-detail">{{userInfo.nickname}}</span>
+											<span class="list-detail">
+												<span class="list-text">
+													{{userInfo.nickname}}
+												</span>
+												<i class="list-arrow">&gt;</i>
+											</span>
 										</a>
 									</li>
 									<li class="list-item">
-										<a href="javascript:;" class="list-link">
-											<span class="list-title">帐号(邮箱)</span>
-											<span class="list-detail">{{userInfo.email}}</span>
+										<a class="list-link">
+											<span class="list-title">邮箱(帐号)</span>
+											<span class="list-detail">
+												<span class="list-tex">{{userInfo.email}}</span>
+											</span>
 										</a>
 									</li>
 									<li class="list-item">
 										<a href="javascript:;" class="list-link" @click="showDetailPanel('gender')">
 											<span class="list-title">性别</span>
-											<span class="list-detail">{{userInfo.gender | genderFilter}}</span>
+											<span class="list-detail">
+												<span class="list-text">{{userInfo.gender | genderFilter}}</span>
+												<i class="list-arrow">&gt;</i>
+											</span>
 										</a>
 									</li>
 								</ul>
@@ -130,6 +140,9 @@
 									<li class="list-item">
 										<a href="javascript:;" class="list-link" @click="showDetailPanel('about')">
 											<span class="list-title">关于</span>
+											<span class="list-detail">											
+												<i class="list-arrow">&gt;</i>
+											</span>
 										</a>
 									</li>
 								</ul>
@@ -140,7 +153,7 @@
 							</div>
 						</div>
 
-						<div class="panel-body detail-panel" v-if="detail_panel_show" transition="slideInLeft">
+						<div class="panel-body detail-panel" v-if="detail_panel_show" :transition="detailTransition">
 							<div class="panel-inner webkitscrollbar list-panel">
 								<form v-if="setting.nickname_show" @submit.prevent="updateSetting('nickname')">
 									<div class="list-group form-group">
@@ -151,7 +164,7 @@
 									</div>
 								</form>
 								<form v-if="setting.gender_show" @submit.prevent="updateSetting('gender')">
-									<div class="list-group">
+									<div class="list-group gender-detail">
 										<div class="form-group list-item">
 											<label>
 												<input type="radio" name="new_gender" :checked="userInfo.gender == 1" v-model="new_gender" :value="1"> 男
@@ -174,10 +187,12 @@
 									</div>
 								</form>
 								<div v-if="setting.about_show">
-									<h3>关于 FatChat</h3>
-									<p>肥聊是一款每居家旅行，在线约会聊天必备的在线聊天即时工具。</p>
+									<div class="about-text">
+										<h3>关于 FatChat</h3>
+										<p>FatChat(肥聊)是一款每居家旅行，在线约会聊天必备的在线聊天即时工具。</p>
+									</div>
 
-									<div class="list-btn-group" @click="toggleMenu('setting')">
+									<div class="list-btn-group" @click="updateSetting()">
 										<button type="submit" class="list-button btn">确认</button>
 									</div>
 								</div>
