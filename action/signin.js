@@ -28,7 +28,7 @@ module.exports = function (req, res, next) {
 		if (err) {
 			res.writeHead(302, {
 				'Location': '/sigin.html',
-				'Set-Cookie': 'signin=1; Max-Age=3; path=/'
+				'Set-Cookie': 'signin='+ encodeURIComponent('系统错误') +'; Max-Age=1; path=/signin.html'
 			});
 			res.end();
 		} else {
@@ -50,7 +50,7 @@ module.exports = function (req, res, next) {
 			} else {
 				res.writeHead(302, {
 					'Location': '/sigin.html',
-					'Set-Cookie': 'signin=2; Max-Age=3; path=/'
+					'Set-Cookie': 'signinMsg='+ encodeURIComponent('邮箱或密码有误') +'; Max-Age=1; path=/signin.html'
 				});
 				res.end();
 			}

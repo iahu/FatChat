@@ -30,6 +30,7 @@ module.exports = Vue.extend({
 			msgList: [],
 			dialogTips: '',
 			ifrup: '',
+			msg: '',
 			qqfaceData: qqfaceData,
 			qqfacePanelShow: false,
 			visibility: false,

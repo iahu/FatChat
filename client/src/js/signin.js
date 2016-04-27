@@ -1,32 +1,27 @@
 var getCookie = require('./lib/getCookie.js');
+var deleteCookie = require('./lib/deleteCookie.js');
 var parserQuery = require('./lib/parserQuery.js');
-var signupPage = document.getElementById('sginup-page');
-var msg = signupPage? getCookie('signupMsg') : getCookie('signinMsg');
+var msg = getCookie('signinMsg');
 var formData = parserQuery(decodeURIComponent(getCookie('formData')));
 
+deleteCookie('signinMsg');
+
 var Vue = require('./lib/vue.js');
-
-Vue.filter('validator', function () {
-	console.log(arguments);
-});
-
 
 var sginup = new Vue({
 	el: '#sginup-page',
 	data: {
 		formData: formData,
 		alertMsg: msg,
+		email: '',
+		password: '',
 		validatMsg: {
 			email: '',
-			password: '',
-			nickname: '',
-			gender: ''
+			password: ''
 		},
 		patterns: {
 			email: /^[a-zA-Z\d][a-zA-Z\d-_.]{1,12}@[a-zA-Z\d]{2,}\.[a-zA-Z]{2,4}$/,
-			password: /^[a-zA-Z\d-_]{6,16}$/,
-			nickname: /^[a-zA-Z\d\u4e00-\u9fa5-_.]{1,15}$/,
-			gender: /^[123]$/
+			password: /^[a-zA-Z\d-_]{6,16}$/
 		}
 	},
 

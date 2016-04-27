@@ -24,17 +24,17 @@
 					<form action="/action/signup" method="POST" class="form-horizontal signup-form" role="form" @submit="submit">
 						<div class="form-group">
 							<label for="email">邮箱</label>
-							<input type="text" v-model="email" name="email" id="email" autofocus="autofocus" @blur="clearMsg" @keyup="validator" :value="formData.email">
+							<input type="text" v-model="email" name="email" id="email" autofocus="autofocus" @keyup="validator | debounce 500" :value="formData.email" maxlength="50">
 							<div class="validate-msg" v-show="validatMsg.email">{{validatMsg.email}}</div>
 						</div>
 						<div class="form-group">
 							<label for="password">密码</label>
-							<input type="password" v-model="password" name="password" id="password" @blur="clearMsg" @keyup="validator">
+							<input type="password" v-model="password" name="password" id="password" @keyup="validator | debounce 500" maxlength="20">
 							<div class="validate-msg" v-show="validatMsg.password">{{validatMsg.password}}</div>
 						</div>
 						<div class="form-group">
 							<label for="nickname">昵称</label>
-							<input type="text" v-model="nickname" name="nickname" id="nickname" @blur="clearMsg" @keyup="validator" :value="formData.nickname">
+							<input type="text" v-model="nickname" name="nickname" id="nickname" @keyup="validator | debounce 500" :value="formData.nickname" maxlength="20">
 							<div class="validate-msg" v-show="validatMsg.nickname">{{validatMsg.nickname}}</div>
 						</div>
 						<div class="form-group">

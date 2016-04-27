@@ -157,7 +157,7 @@
 							<div class="panel-inner webkitscrollbar list-panel">
 								<form v-if="setting.nickname_show" @submit.prevent="updateSetting('nickname')">
 									<div class="list-group form-group">
-										<input type="text" v-model="new_nickname" :value="userInfo.nickname">
+										<input type="text" v-model="new_nickname" :value="userInfo.nickname" maxlength="20">
 									</div>
 									<div class="list-btn-group">
 										<button type="submit" class="list-button btn">确认</button>
@@ -243,7 +243,7 @@
 												<img :src="'img/avatar/'+ toUser.avatar" alt="{{toUser.nickname}}">
 											</div>
 											<p class="im-msg-bd" v-if="msg.type==1">{{{msg.body | qqface}}}</p>
-											<p class="im-msg-bd" v-if="msg.type==2"><img class="img-msg" :src="msg.body" alt="图片"></p>
+											<p class="im-msg-bd" v-if="msg.type==2"><img class="img-msg" :src="msg.body" alt="图片" @load="imgMsgLoad"></p>
 										</div>
 									</template>
 								</li>
