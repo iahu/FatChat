@@ -42,8 +42,9 @@ function routes(req, res, next) {
 	req.rewrite(/^\/prd\/(.+)?/, '/$1');
 	req.rewrite(/^\/img\/(.+)/, '/$1');
 
+	// 白名单
 	if ( /(.+)\.html/.test(req.url) &&
-		! /^\/(signin|signup)\.html([?#](.+))?$/.test(req.url) &&
+		! /^\/(signin|signup|forget|reset_password)\.html([?#](.+))?$/.test(req.url) &&
 		(sessionID !== cookie.s)
 	) {
 		res.writeHead(302, {

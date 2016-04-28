@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>登录 FatChat</title>
+	<title>找回密码 | FatChat</title>
 	<link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
@@ -17,31 +17,19 @@
 		</div>
 
 		<div class="main content">
-			<h2>欢迎登录 FatChat</h2>
+			<h2>找回密码</h2>
 			<div class="clearfix">
 				<div class="signup">
 					<div id="alert" v-if="alertMsg">{{alertMsg}}</div>
-					<form action="/action/signin" method="POST" class="form-horizontal" role="form">
+					<form action="/action/forget" method="POST" class="form-horizontal" role="form">
 							<div class="form-group">
 								<label for="email">邮箱</label>
 								<input type="text" v-model="email" name="email" id="email" autofocus="autofocus" @keyup="validator | debounce 500" :value="formData.email">
 							<div class="validate-msg" v-show="validatMsg.email">{{validatMsg.email}}</div>
 							</div>
-							<div class="form-group">
-								<label for="password">密码</label>
-								<input type="password" v-model="password" name="password" id="password" @keyup="validator | debounce 500">
-							<div class="validate-msg" v-show="validatMsg.password">{{validatMsg.password}}</div>
-							</div>
+
 							<div class="form-group submit-group clearfix">
-								<button type="submit" class="btn btn-large btn-submit" :disabled="allValidate > 0">登录</button>
-							</div>
-							<div class="form-group tips">
-								<a href="/forget.html" class="link-sigin">找回密码</a>
-								<span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-								<span>
-									还没有帐户？
-									<a href="/signup.html" class="link-sigin">注册新用户</a>
-								</span>
+								<button type="submit" class="btn btn-large btn-submit" :disabled="allValidate > 0">发送邮件</button>
 							</div>
 					</form>
 				</div>
@@ -52,6 +40,6 @@
 			<p class="copyright">Shouzi &copy;2016</p>
 		</div>
 	</div>
-	<script src="/js/signin.js"></script>
+	<script src="/js/forget.js"></script>
 </body>
 </html>
