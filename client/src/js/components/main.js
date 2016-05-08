@@ -5,6 +5,14 @@ var Vue = require('../lib/vue.js'),
 	_ = require('../lib/lodash.js'),
 	uid = getP1().uid;
 
+Vue.filter('getAge', function (birthYear) {
+	if (!birthYear) {
+		return 0;
+	}
+	var d = new Date();
+	return d.getFullYear() - +birthYear + 1;
+});
+
 module.exports = Vue.extend({
 	template: '#main-tpl',
 	data: function () {
@@ -32,10 +40,13 @@ module.exports = Vue.extend({
 			setting: {
 				nickname_show: false,
 				gender_show: false,
-				about_show: false
+				about_show: false,
+				birthday_show: false,
 			},
 			new_nickname: '',
-			new_gender: ''
+			new_gender: '',
+			new_signature: '',
+			new_birthday: ''
 		};
 	},
 	ready: function () {
@@ -319,15 +330,28 @@ module.exports = Vue.extend({
 		updateSetting: function (key) {
 			var self = this;
 			var value = this['new_' + key];
-			var oldValue = this[key];
+			var oldValue = this.userInfo[key];
 
-			this.panelTransition = 'slideInRight';
-			this.detailTransition = 'slideInRight';
+			if ( key === 'birthday' ) {
+				if ( ! /[1-9]\d{0,2}/.test(value) ) {
+					return oldValue;
+				}
+				if ( +value < 6 ) {
+					alert('请填写正确的年龄');
+					return;
+				}
+				value = (new Date()).getFullYear() - +value + 1;
+			}
 
-			this.current_menu = 'setting';
-			this.detail_panel_show = false;
+			if ( key !== 'signature' ) {
+				this.panelTransition = 'slideInRight';
+				this.detailTransition = 'slideInRight';
 
-			if ( this.userInfo.hasOwnProperty(key) && value && value !== oldValue ) {
+				this.current_menu = 'setting';
+				this.detail_panel_show = false;
+			}
+
+			if ( this.userInfo.hasOwnProperty(key) && value !== oldValue ) {
 				this.$http({
 					url: '/api/user/updateUserInfo',
 					method: 'POST',
@@ -344,6 +368,10 @@ module.exports = Vue.extend({
 					}
 				});
 			}
+		},
+
+		submitSignature: function (e) {
+			e.target.blur();
 		}
 	},
 	events: {

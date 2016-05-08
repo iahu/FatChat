@@ -257,11 +257,29 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				background-color: #fff;
 			}
 			.name-info {
-				font-size: 18px;
 				float: left;
-				padding: 8px 14px;
-				margin: 0;
+				padding: 4px 14px;
 				color: #333;
+
+				.nickname {
+					margin: 4px 0;
+					font-size: 18px;
+				}
+
+				.signature {
+					font-size: 12px;
+					font-family: serif;
+					width: 12em;
+					padding: 5px 0px;
+					background-color: transparent;
+					border: 0;
+					color: #999;
+
+					&:focus {
+						outline: 2px solid #ccc;
+						background-color: #fff;
+					}
+				}
 			}
 
 			.addfriends-bar {
@@ -317,6 +335,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 			width: 1%;
 			color: #333;
 			position: relative;
+			border-left: 1px solid #eee;
 			border-right: 1px solid #eee;
 			margin-left: -1px;
 

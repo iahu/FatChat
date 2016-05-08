@@ -21,7 +21,10 @@
 						<div class="avatar-wrapper">
 							<img v-if="userInfo.avatar" :src="'/img/avatar/'+userInfo.avatar" alt="{{userInfo.nickname}}" width="64" height="64">
 						</div>
-						<p class="name-info">{{userInfo.nickname}}</p>
+						<div class="name-info">
+							<h3 class="nickname">{{userInfo.nickname}}</h3>
+							<input type="text" class="signature" placeholder="个性签名" maxlength="32" value="{{userInfo.signature}}" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
+						</div>
 						<b class="vender">FatChat</b>
 					</div>
 
@@ -134,6 +137,15 @@
 											</span>
 										</a>
 									</li>
+									<li class="list-item">
+										<a href="javascript:;" class="list-link" @click="showDetailPanel('birthday')">
+											<span class="list-title">年龄</span>
+											<span class="list-detail">
+												<span class="list-text">{{userInfo.birthday | getAge}}</span>
+												<i class="list-arrow">&gt;</i>
+											</span>
+										</a>
+									</li>
 								</ul>
 
 								<ul class="list-group">
@@ -182,6 +194,14 @@
 										</div>
 									</div>
 										
+									<div class="list-btn-group">
+										<button type="submit" class="list-button btn">确认</button>
+									</div>
+								</form>
+								<form v-if="setting.birthday_show" @submit.prevent="updateSetting('birthday')">
+									<div class="list-group form-group">
+										<input type="text" v-model="new_birthday" :value="userInfo.birthday | getAge" maxlength="3">
+									</div>
 									<div class="list-btn-group">
 										<button type="submit" class="list-button btn">确认</button>
 									</div>
@@ -255,7 +275,7 @@
 								<button class="im-tb emoji btn-plaint" @click.prevent.stop="showQQFacePanel">表情</button>
 								<button class="im-tb photo btn-plaint">图片
 									<form action="/api/fileupload" method="POST" target="ifrup" enctype="multipart/form-data">
-										<input type="file" name="ifrup" id="ifrup" v-model="ifrup" accept="image/*" @change="filechanged($event)">
+										<input type="file" name="ifrup" id="ifrup" v-model="ifrup" accept="imbirthday/*" @change="filechanged($event)">
 									</form>
 									<iframe @load="fileuploadComplete($event)" style="display: none;" frameborder="0" name="ifrup" id="ifrup">
 									</iframe>
