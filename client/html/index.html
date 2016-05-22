@@ -23,7 +23,7 @@
 						</div>
 						<div class="name-info">
 							<h3 class="nickname">{{userInfo.nickname}}</h3>
-							<input type="text" class="signature" placeholder="个性签名" maxlength="32" :value="{{userInfo.signature}}" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
+							<input type="text" class="signature" placeholder="个性签名" maxlength="32" :value="userInfo.signature" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
 						</div>
 						<b class="vender">FatChat</b>
 					</div>
