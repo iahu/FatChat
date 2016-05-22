@@ -23,7 +23,7 @@
 						</div>
 						<div class="name-info">
 							<h3 class="nickname">{{userInfo.nickname}}</h3>
-							<input type="text" class="signature" placeholder="个性签名" maxlength="32" value="{{userInfo.signature}}" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
+							<input type="text" class="signature" placeholder="个性签名" maxlength="32" :value="{{userInfo.signature}}" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
 						</div>
 						<b class="vender">FatChat</b>
 					</div>
@@ -96,7 +96,8 @@
 											<a href="javascript:;" class="list-link" @click.stop="toggleClass($index, 'friends')" @dblclick="openMsgDialog(friend)" @keyup.enter="openMsgDialog(friend)" :class="{active: friendsActiveID == $index}">
 												<span class="avatar"><img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}"></span>
 												<div class="text">
-													<span class="title">{{friend.nickname}}</span>
+													<p class="title">{{friend.nickname}}</p>
+													<p class="signature">{{friend.signature}}</p>
 												</div>
 											</a>
 										</li>
@@ -160,7 +161,7 @@
 								</ul>
 
 								<div class="list-btn-group">
-									<a href="#setting/quit" class="list-button btn quit-btn" @click="quit">退出</a>
+									<a href="#setting/quit" class="list-button btn red-btn" @click="quit">退出</a>
 								</div>
 							</div>
 						</div>
@@ -301,7 +302,19 @@
 						</div>
 					</div>
 				
-					<div class="im-bd-right">af</div>
+					<div class="im-bd-right">
+						<dl class="friend-info-list">
+							<dd v-if="toUser.avatar" class="ta-c">
+								<img :src="'/img/avatar/'+toUser.avatar" alt="{{toUser.nickname}}" width="128">
+							</dd>
+							<dd>性别： <span>{{toUser.gender | genderFilter}}</span></dd>
+							<dd>年龄： <span>{{toUser.birthday | getAge}}</span></dd>
+							<dd>签名： <span>{{toUser.signature}}</span></dd>
+						</dl>
+						<div class="btn-group">
+							<button class="btn red-btn">删除好友</button>
+						</div>
+					</div>
 				</div>
 
 

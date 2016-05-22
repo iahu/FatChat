@@ -1,13 +1,21 @@
 module.exports = function (req, res, next) {
-	var params = req.params;
+	var params = req.body;
 	var cipher = require('../lib/cipherHelper.js');
+	var mydb = require('../lib/mydb.js');
+	var md5 = require('../lib/md5.js');
 	var maxAge = 30 * 60 * 1000;
+	var newPass;
 
-	if ( !(params && params.email && params.key) ) {
+	if ( req.method !== 'POST' ) {
 		return next();
 	}
 
-	var data = cipher.decipher('blowfish', 'kissFC', params.key );
+	if ( !(params && params.email && params.key && params.token && params.password) ) {
+		res.end('参错错误');
+		return;
+	}
+
+	var data = cipher.decipher('blowfish', params.token + 'kissFC', params.key );
 	if ( data ) {
 		data = data.split('#');
 	}
@@ -19,9 +27,27 @@ module.exports = function (req, res, next) {
 		return res.end('非法的链接');
 	}
 
-	res.writeHead(302, {
-		'Location': '/reset_password.html',
-		'Set-Cookie': 'resetMsg='+decodeURIComponent(params.email)+'; Max-Age=0; path=/reset_password.html'
+	newPass = mydb.escape(md5(params.password));
+
+	mydb.query('UPDATE users SET password='+ newPass +'  WHERE email='+ mydb.escape(params.email), function (err, data) {
+		if ( err ) {
+			res.writeHead(302, {
+				'Location': '/reset_password.html',
+				'Set-Cookie': 'resetMsg='+decodeURIComponent('重置密码失败')+'; Max-Age=0; path=/reset_password.html'
+			});
+			res.end('');
+		} else {
+			res.writeHead(302, {
+				'Location': '/signin.html',
+				'Set-Cookie': [
+					'signinMsg='+decodeURIComponent('重置成功')+'; Max-Age=0; path=/signin.html; ',
+
+					's=; path=/; Max-Age=-1; ',
+					'P0=; path=/; Max-Age=-1; ',
+					'P1=; path=/; Max-Age=-1; '
+				]
+			});
+			res.end('');
+		}
 	});
-	res.end('');
 }

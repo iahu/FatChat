@@ -127,6 +127,7 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 }
 .fl-l {float: left;}
 .fl-r {float: right;}
+.ta-c {text-align: center;}
 .form-group {
 	clear: both;
 	padding: 6px 0;
@@ -194,6 +195,9 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 	&.btn-white {
 		background-color: #eee;
 		color: #333;
+	}
+	&.red-btn {
+		background-color: #CE3434;
 	}
 }
 
@@ -434,6 +438,16 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				vertical-align: middle;
 			}
 
+			.title {
+				margin: 0;
+			}
+			.signature {
+				color: #999;
+				display: block;
+				font-size: 12px;
+				margin: 5px 0 0 0;
+			}
+
 			.add-request {
 				.name {
 					color: #c00;
@@ -503,12 +517,6 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 				width: 100%;
 				padding: 5px 0;
 				text-align: center;
-			}
-		}
-
-		.setting {
-			.quit-btn {
-				background-color: #CE3434;
 			}
 		}
 
@@ -726,7 +734,42 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		right: 0;
 		width: 180px;
 		height: 100%;
+
+		.btn-group {
+			text-align: center;
+		}
+		.btn {
+			width: 90%;
+			margin: 0 auto;
+			font-size: 12px;
+		}
 	}
+
+	.friend-info-list {
+		padding: 0;
+
+		dt {
+			margin: 0;
+			padding: 0 12px 6px 12px;
+			font-size: 16px;
+			border-bottom: 1px dotted #ccc;
+			color: #333;
+			text-align: center;
+		}
+
+		dd {
+			font-size: 14px;
+			color: #999;
+			padding: 6px 12px;
+			margin: 0;
+			border-bottom: 1px dotted #ccc;
+
+			span {
+				color: #666;
+			}
+		}
+	}
+
 
 	.im-input-toolbar {
 		padding: 0 10px;

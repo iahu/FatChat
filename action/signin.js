@@ -8,6 +8,11 @@ module.exports = function (req, res, next) {
 	var session;
 	var msg, md5Password;
 
+	if ( !(params && params.email && params.password) ) {
+		res.end('参数错误');
+		return;
+	}
+
 	params.email = params.email.toLowerCase();
 
 	switch(false) {

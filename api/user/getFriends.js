@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
 
 	uid = db.escape(uid);
 	db.query(
-		'SELECT DISTINCT(id), nickname, avatar, createtime FROM users WHERE id IN'
+		'SELECT DISTINCT(id), nickname, gender, avatar, createtime, birthday, signature FROM users WHERE id IN'
 		+' ('
 			+ ' SELECT friend_id FROM friendship WHERE mutual=1 AND user_id='+uid
 			+ ' UNION'

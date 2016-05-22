@@ -13,6 +13,7 @@ var Actions = require('./action/');
 var APIs = {
 	searchFriends: require('./api/searchFriends.js'),
 	fileupload: require('./api/fileupload.js'),
+	sendKey: require('./api/sendKey.js'),
 	message: require('./api/message/'),
 	user: require('./api/user/')
 };

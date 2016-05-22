@@ -1,10 +1,23 @@
 @import (less) './lib/normalize.css';
 body {font-family: Tahoma, '\5fae\8f6f\96c5\9ed1', sans-serif;}
-.clearfix {overflow: hidden;}
+.clearfix:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+}
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
 .fl-l {float: left;}
 .fl-r {float: right;}
+.va-m {vertical-align: middle;}
+
 html {
-	background-color: #fff;
+	background: url('/img/bg/3.jpg');
 }
 .signup-page {
 	a {text-decoration: none;}
@@ -12,7 +25,7 @@ html {
 	.btn {
 		border: 0;
 		background-color: #09f;
-		padding: 6px 20px;
+		padding: 5px 20px;
 		color: #fff;
 		text-decoration: none;
 		border-radius: 4px;
@@ -30,7 +43,20 @@ html {
 			background-color: #eee;
 			color: #333;
 		}
+
+		&.disabled {
+			color: #999;
+			opacity: 0.5;
+			filter: alpha(opacity=50);
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			filter: alpha(opacity=50);
+		}
 	}
+	a.btn {text-decoration: none;}
+
 	#alert {
 		color: #faa;
 		text-align: center;
@@ -100,7 +126,6 @@ html {
 	}
 
 	.header-bar {
-		background-color: #fff;
 		padding: 15px 30px;
 
 		.logo {
@@ -120,9 +145,9 @@ html {
 		width: 420px;
 		padding: 30px 0;
 		min-height: 200px;
-		margin: 50px auto 100px auto;
-		background-color: #f2f2f2;
+		margin: 30px auto 100px auto;
 		border: 1px solid #ccc;
+		background-color: #fff;
 		// background: url(/img/baymax.jpg) right 100px no-repeat;
 		// height: 360px;
 		// min-height: 620px;
@@ -141,6 +166,14 @@ html {
 
 			.submit-group {
 				margin-top: 15px;
+			}
+
+			.form-group {
+				padding: 12px 0;
+			}
+			label {
+				height: 33px;
+				line-height: 33px;
 			}
 		}
 		.side-content {
@@ -171,16 +204,28 @@ html {
 				}
 			}
 		}
+
+		.vkey-group {
+			#token {
+				width: 114px;
+			}
+			.send-btn {
+				font-size: 12px;
+				padding: 8px 0;
+				width: 120px;
+				text-align: center;
+			}
+		}
 	}
 
 	.footer {
 		font-size: 12px;
 		padding: 6px;
-		border-top: 1px solid #eee;
+		// border-top: 1px solid #eee;
 		.copyright {
 			margin: 0;
 			text-align: center;
-			color: #999;
+			color: #ccc;
 		}
 	}
 }

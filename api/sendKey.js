@@ -1,6 +1,6 @@
 module.exports = function (req, res, next) {
 	var body, email, paramsValidate, nodemailer, db,
-		transporter, mailOptions, link, key, cipherHelper;
+		transporter, mailOptions, rand, key, cipherHelper;
 
 	if ( req.method.toUpperCase() !== 'POST' ) {
 		return next();
@@ -31,35 +31,30 @@ module.exports = function (req, res, next) {
 		transporter = nodemailer.createTransport({
 			host: 'smtp.163.com',
 			auth: {
-				user: 'user@163.com',
-				pass: 'pass'
+				user: 'fusionbin@163.com',
+				pass: 'deiiiiui'
 			}
 		});
 		cipherHelper = require('../lib/cipherHelper.js');
-		key = cipherHelper.cipher('blowfish', 'kissFC' , email + '#' + (+new Date()) );
-		link = req.headers.origin + '/action/find_password?email='+ encodeURIComponent(email) + '&key=' + key;
+		rand = Math.random().toString().slice(-6);
+		key = cipherHelper.cipher('blowfish', rand + 'kissFC' , email + '#' + (+new Date()) );
 		mailOptions = {
 		  from: '"FatChat App" <fusionbin@163.com>', // sender address 
 		  to: email, // list of receivers 
 		  subject: '找回你的 FatChat 密码', // Subject line 
-		  html: '修改密码请点击&nbsp;<a style="color:#09f" href="'+
-		  	link +'">此链接</a>&nbsp;或复制链接在浏览器地址栏打开<br>'+
-		  	'如果不是你本人操作的请注意修改密码<br><br><br>FatChat' // html body 
+		  html: '<p style="font-size:14;">你好：你正在重置密码，请在验证码中输入 <span style="font-size:16px;color:red;">' + rand +
+		  	'</span>，已完成操作。</p><br><br><br>FatChat' // html body 
 		};
 
 		transporter.sendMail(mailOptions, function (error, info) {
 			var msg;
 			if (error) {
-				msg = encodeURIComponent('邮件发送失败');
+				msg = '邮件发送失败';
 			} else {
-				msg = encodeURIComponent('邮件发送成功');
+				msg = '邮件发送成功';
 			}
 
-			res.writeHead(302, {
-				'Location': '/forget.html',
-				'Set-Cookie': 'forgetMsg='+ msg +'; Max-Age=1; path=/forget.html'
-			});
-			res.end();
+			res.responseJSONP({status: 'ok', msg: msg, key: key});
 		});
 	});
 };

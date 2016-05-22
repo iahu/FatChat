@@ -59,7 +59,7 @@ module.exports = Vue.extend({
 			// getFriendsData  1/60s
 			setInterval(function () {
 				self.getFriendsData.call(self);
-			}, 60000);
+			}, 30000);
 		});
 
 		// 1/30s
@@ -169,7 +169,9 @@ module.exports = Vue.extend({
 					this.unknowFriends = this.unknowFriends || {};
 
 					_.forEach(res.msg, function (o, i) {
-						self.unknowFriends[o.id] = o;
+						if (o.id) {
+							self.unknowFriends[o.id] = o;
+						}
 					});
 				}
 			})
