@@ -63,9 +63,11 @@ module.exports = Vue.extend({
 		});
 
 		// 1/30s
-		setInterval(function () {
-			self.getAddRequest.call(self);
-		}, 30000);
+		this.getAddRequest().then(function () {
+			setInterval(function () {
+				self.getAddRequest.call(self);
+			}, 30000);
+		});
 	},
 	computed: {
 		sessions: function () {
@@ -169,7 +171,7 @@ module.exports = Vue.extend({
 					this.unknowFriends = this.unknowFriends || {};
 
 					_.forEach(res.msg, function (o, i) {
-						if (o.id) {
+						if (o.id && !self.unknowFriends[o.id]) {
 							self.unknowFriends[o.id] = o;
 						}
 					});
@@ -203,6 +205,7 @@ module.exports = Vue.extend({
 			});
 		},
 		toggleMenu: function (menu) {
+			this.detail_panel_show = false;
 			this.current_menu = menu;
 		},
 		toggleClass: function (idx, type) {
@@ -389,6 +392,16 @@ module.exports = Vue.extend({
 
 		dialogClosed: function () {
 			this.talkingWith = '';
+		},
+
+		removeFriend: function (e, id) {
+			var friends = this.friends;
+			for (var i = friends.length - 1; i >= 0; i--) {
+				if ( friends[i][id] === id ) {
+					friends = friends.splice(i, 1);
+					break;
+				}
+			}
 		}
 	}
 });

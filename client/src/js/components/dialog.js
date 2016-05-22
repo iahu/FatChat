@@ -166,6 +166,29 @@ module.exports = Vue.extend({
 				this._send(msgData).then(callback);
 			}
 			this.dialogTips = '';
+		},
+
+		imgMsgLoad: function () {
+			scrollToBottom(document.getElementById('ps'));
+		},
+
+		removeFriend: function (fid) {
+			this.$http({
+				url: '/api/user/removeFriend',
+				data: {
+					uid: this.fromUser.id,
+					fid: this.toUser.id
+				}
+			}).then(function (res) {
+				if (res && res.data && res.data.msg === 'success') {
+					this.hide();
+					this.dispatchChildEvent('removeFriend', this.toUser.id);
+				}
+			})
+		},
+
+		dispatchChildEvent: function (name, data) {
+			this.$dispatch( 'eventFromChild', name, data);
 		}
 	},
 	events: {

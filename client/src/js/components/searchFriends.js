@@ -4,6 +4,12 @@ var Vue = require('../lib/vue.js'),
 
 module.exports = Vue.extend({
 	template: '#searchfriends-tpl',
+	data: function () {
+		return {
+			friends_info: '',
+			friends: ''
+		};
+	},
 	methods: {
 		searchFriends: function () {
 			var that = this;

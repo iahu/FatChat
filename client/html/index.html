@@ -111,6 +111,14 @@
 							<div class="panel-inner webkitscrollbar list-panel">
 								<ul class="list-group">
 									<li class="list-item">
+										<a class="list-link">
+											<span class="list-title">邮箱</span>
+											<span class="list-detail">
+												<span class="list-tex">{{userInfo.email}}</span>
+											</span>
+										</a>
+									</li>
+									<li class="list-item">
 										<a href="javascript:;" @click="showDetailPanel('nickname')" class="list-link">
 											<span class="list-title">昵称</span>
 											<span class="list-detail">
@@ -118,14 +126,6 @@
 													{{userInfo.nickname}}
 												</span>
 												<i class="list-arrow">&gt;</i>
-											</span>
-										</a>
-									</li>
-									<li class="list-item">
-										<a class="list-link">
-											<span class="list-title">邮箱(帐号)</span>
-											<span class="list-detail">
-												<span class="list-tex">{{userInfo.email}}</span>
 											</span>
 										</a>
 									</li>
@@ -312,7 +312,7 @@
 							<dd>签名： <span>{{toUser.signature}}</span></dd>
 						</dl>
 						<div class="btn-group">
-							<button class="btn red-btn">删除好友</button>
+							<button class="btn red-btn" @click="removeFriend">删除好友</button>
 						</div>
 					</div>
 				</div>
@@ -334,8 +334,8 @@
 						<button type="button" class="close" aria-hidden="true" @click="hide">&times;</button>
 						<h4 class="modal-title">{{title}}</h4>
 					</div>
-					<div class="modal-body" :is="modalBody">
-
+					<div class="modal-body">
+						<template :is="modalBody"></template>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default"  @click="hide">取消</button>

@@ -31,15 +31,15 @@ module.exports = function (req, res, next) {
 		transporter = nodemailer.createTransport({
 			host: 'smtp.163.com',
 			auth: {
-				user: 'fusionbin@163.com',
-				pass: 'deiiiiui'
+				user: 'user@163.com',
+				pass: 'pass'
 			}
 		});
 		cipherHelper = require('../lib/cipherHelper.js');
 		rand = Math.random().toString().slice(-6);
 		key = cipherHelper.cipher('blowfish', rand + 'kissFC' , email + '#' + (+new Date()) );
 		mailOptions = {
-		  from: '"FatChat App" <fusionbin@163.com>', // sender address 
+		  from: '"FatChat App" <user@163.com>', // sender address 
 		  to: email, // list of receivers 
 		  subject: '找回你的 FatChat 密码', // Subject line 
 		  html: '<p style="font-size:14;">你好：你正在重置密码，请在验证码中输入 <span style="font-size:16px;color:red;">' + rand +
