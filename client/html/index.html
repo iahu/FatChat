@@ -109,6 +109,7 @@
 
 						<div class="panel-body setting" v-if="current_menu === 'setting'" :transition="panelTransition">
 							<div class="panel-inner webkitscrollbar list-panel">
+								<div class="setting-msg" v-if="settingMsg">{{settingMsg}}</div>
 								<ul class="list-group">
 									<li class="list-item">
 										<a class="list-link">
@@ -237,7 +238,7 @@
 										<div class="list-group">
 											<div class="list-item clearfix form-group">
 												<label class="list-title" for="old_password">原密码</label>
-												<input type="password" id="old_password" v-model="old_password" maxlength="20" class="list-detail">
+												<input type="password" id="old_password" v-model="old_password" maxlength="20">
 											</div>
 											
 											<div class="list-item clearfix form-group">
@@ -247,7 +248,7 @@
 											
 											<div class="list-item clearfix form-group">
 												<label class="list-title" for="new_password2">确认密码</label>
-												<input type="password" id="new_password2" v-model="new_password" maxlength="20">
+												<input type="password" id="new_password2" v-model="new_password2" maxlength="20">
 											</div>
 										</div>
 

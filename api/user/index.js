@@ -7,5 +7,6 @@ module.exports = {
 	rejectAddRequest: require('./rejectAddRequest'),
 	getFriends: require('./getFriends'),
 	updateUserInfo: require('./updateUserInfo'),
-	getAddRequest: require('./getAddRequest')
+	getAddRequest: require('./getAddRequest'),
+	resetPassword: require('./resetPassword')
 };

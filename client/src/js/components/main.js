@@ -33,6 +33,7 @@ module.exports = Vue.extend({
 			pollTime: 5000,
 			noMsg: true,
 
+			settingMsg: '',
 			old_password: '',
 			new_password: '',
 			new_password2: '',
@@ -181,7 +182,7 @@ module.exports = Vue.extend({
 						}
 					});
 				}
-			})
+			});
 		},
 		_getSessions: function (data) {
 			return this.$http({
@@ -337,62 +338,86 @@ module.exports = Vue.extend({
 			}
 		},
 
-		updateSetting: function (key) {
-			var value = this['new_' + key];
-			var oldValue = this.userInfo[key];
+		hideSetting: function () {
+			this.panelTransition = 'slideInRight';
+			this.detailTransition = 'slideInRight';
 
 			this.current_menu = 'setting';
 			this.detail_panel_show = false;
+		},
+
+		updateSetting: function (key) {
+			var value = this['new_' + key];
+			var oldValue = this.userInfo[key];
+			var that = this;
+			var tid;
+
+			function setSettingMsg(msg) {
+				that.settingMsg = msg;
+				if (tid) {
+					clearTimeout(tid);
+				}
+				tid = setTimeout(function () {
+					that.settingMsg = '';
+				}, 3000);
+			}
+				
+			if (key === 'birthday') {
+				if ( ! /[1-9]\d{0,2}/.test(value) ) {
+					return oldValue;
+				}
+				if ( +value < 6 ) {
+					alert('请填写正确的年龄');
+					return;
+				}
+				value = (new Date()).getFullYear() - +value + 1;
+			}
+
+			this.hideSetting();
 			
-			switch(key) {
-				case key === 'birthday':
-					if ( ! /[1-9]\d{0,2}/.test(value) ) {
-						return oldValue;
+			if (key === 'password') {
+				if ( ! (this.old_password && this.new_password && this.new_password === this.new_password2) ) {
+					return;
+				}
+				this.$http({
+					url: '/api/user/resetPassword',
+					method: 'POST',
+					data: {
+						uid: uid,
+						oldpass: this.old_password,
+						newpass: this.new_password,
+						newpass2: this.new_password2
 					}
-					if ( +value < 6 ) {
-						alert('请填写正确的年龄');
-						return;
+				}).then(function (res) {
+					if (res && res.data && res.data.success) {
+						setSettingMsg('更新成功，请重新登录');
+						setTimeout(function() {
+							redirect();
+						}, 500);
 					}
-					value = (new Date()).getFullYear() - +value + 1;
-					break;
+				});		
 
-				case key !== 'signature':
-					this.panelTransition = 'slideInRight';
-					this.detailTransition = 'slideInRight';
+				return;
+			}
 
-					break;
-
-				case this.userInfo.hasOwnProperty(key) && value !== oldValue:
-					this.$http({
-						url: '/api/user/updateUserInfo',
-						method: 'POST',
-						data: {
-							uid: uid,
-							key: key,
-							value: value
-						}
-					}).then(function (res) {
-						if ( res && res.data && res.data.success ) {
-							this.userInfo[key] = value;
-						} else {
-							this.userInfo[key] = oldValue;
-						}
-					});
-					break;
-
-				case 'password':
-					this.$http({
-						url: '/api/user/resetpassword',
-						method: 'POST',
-						data: {
-							uid: uid,
-							oldpass: this.old_password,
-							newpass: this.new_password,
-							newpass2: this.new_password2
-						}
-					}).then(function (res) {
-						console.log('test');
-					});
+			if (this.userInfo.hasOwnProperty(key) && value !== oldValue) {
+				this.$http({
+					url: '/api/user/updateUserInfo',
+					method: 'POST',
+					data: {
+						uid: uid,
+						key: key,
+						value: value
+					}
+				}).then(function (res) {
+					if ( res && res.data && res.data.success ) {
+						this.userInfo[key] = value;
+						setSettingMsg('更新成功');
+					} else {
+						this.userInfo[key] = oldValue;
+						setSettingMsg('更新失败');
+					}
+				});
 			}
 		},
 
