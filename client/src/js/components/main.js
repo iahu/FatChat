@@ -359,7 +359,7 @@ module.exports = Vue.extend({
 				}
 				tid = setTimeout(function () {
 					that.settingMsg = '';
-				}, 3000);
+				}, 800);
 			}
 				
 			if (key === 'birthday') {
@@ -400,7 +400,7 @@ module.exports = Vue.extend({
 				return;
 			}
 
-			if (this.userInfo.hasOwnProperty(key) && value !== oldValue) {
+			if (this.userInfo.hasOwnProperty(key) && value.toString() !== oldValue) {
 				this.$http({
 					url: '/api/user/updateUserInfo',
 					method: 'POST',
