@@ -33,7 +33,7 @@ module.exports = function (req, res, next) {
 		if (err) {
 			res.writeHead(302, {
 				'Location': '/sigin.html',
-				'Set-Cookie': 'signin='+ encodeURIComponent('系统错误') +'; Max-Age=1; path=/signin.html'
+				'Set-Cookie': 'signinMsg='+ encodeURIComponent('系统错误') +'; Max-Age=1; path=/signin.html'
 			});
 			res.end();
 		} else {

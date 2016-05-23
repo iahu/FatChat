@@ -151,6 +151,17 @@
 
 								<ul class="list-group">
 									<li class="list-item">
+										<a href="javascript:;" class="list-link" @click="showDetailPanel('resetpass')">
+											<span class="list-title">修改密码</span>
+											<span class="list-detail">											
+												<i class="list-arrow">&gt;</i>
+											</span>
+										</a>
+									</li>
+								</ul>
+
+								<ul class="list-group">
+									<li class="list-item">
 										<a href="javascript:;" class="list-link" @click="showDetailPanel('about')">
 											<span class="list-title">关于</span>
 											<span class="list-detail">											
@@ -169,6 +180,7 @@
 						<div class="panel-body detail-panel" v-if="detail_panel_show" :transition="detailTransition">
 							<div class="panel-inner webkitscrollbar list-panel">
 								<form v-if="setting.nickname_show" @submit.prevent="updateSetting('nickname')">
+									<h4 class="list-header">修改昵称</h4>
 									<div class="list-group form-group">
 										<input type="text" v-model="new_nickname" :value="userInfo.nickname" maxlength="20">
 									</div>
@@ -177,6 +189,7 @@
 									</div>
 								</form>
 								<form v-if="setting.gender_show" @submit.prevent="updateSetting('gender')">
+									<h4 class="list-header">修改性别</h4>
 									<div class="list-group gender-detail">
 										<div class="form-group list-item">
 											<label>
@@ -200,6 +213,7 @@
 									</div>
 								</form>
 								<form v-if="setting.birthday_show" @submit.prevent="updateSetting('birthday')">
+									<h4 class="list-header">修改年龄</h4>
 									<div class="list-group form-group">
 										<input type="text" v-model="new_birthday" :value="userInfo.birthday | getAge" maxlength="3">
 									</div>
@@ -213,10 +227,35 @@
 										<p>FatChat(肥聊)是一款每居家旅行，在线约会聊天必备的在线聊天即时工具。</p>
 									</div>
 
-									<div class="list-btn-group" @click="updateSetting()">
+									<div class="list-btn-group" @click="updateSetting('about')">
 										<button type="submit" class="list-button btn">确认</button>
 									</div>
 								</div>
+								<form v-if="setting.resetpass_show" @submit.prevent="updateSetting('password')">
+									<div class="list-panel resetpass-box">
+										<h4 class="list-header">修改密码</h4>
+										<div class="list-group">
+											<div class="list-item clearfix form-group">
+												<label class="list-title" for="old_password">原密码</label>
+												<input type="password" id="old_password" v-model="old_password" maxlength="20" class="list-detail">
+											</div>
+											
+											<div class="list-item clearfix form-group">
+												<label class="list-title" for="new_password">新密码</label>
+												<input type="password" id="new_password" v-model="new_password" maxlength="20">
+											</div>
+											
+											<div class="list-item clearfix form-group">
+												<label class="list-title" for="new_password2">确认密码</label>
+												<input type="password" id="new_password2" v-model="new_password" maxlength="20">
+											</div>
+										</div>
+
+										<div class="list-btn-group">
+											<button type="submit" class="list-button btn">确认</button>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>

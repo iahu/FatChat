@@ -33,6 +33,10 @@ module.exports = Vue.extend({
 			pollTime: 5000,
 			noMsg: true,
 
+			old_password: '',
+			new_password: '',
+			new_password2: '',
+
 			panelTransition: 'slideInLeft',
 			detailTransition: 'slideInLeft',
 
@@ -42,6 +46,7 @@ module.exports = Vue.extend({
 				gender_show: false,
 				about_show: false,
 				birthday_show: false,
+				resetpass_show: false,
 			},
 			new_nickname: '',
 			new_gender: '',
@@ -333,45 +338,61 @@ module.exports = Vue.extend({
 		},
 
 		updateSetting: function (key) {
-			var self = this;
 			var value = this['new_' + key];
 			var oldValue = this.userInfo[key];
 
-			if ( key === 'birthday' ) {
-				if ( ! /[1-9]\d{0,2}/.test(value) ) {
-					return oldValue;
-				}
-				if ( +value < 6 ) {
-					alert('请填写正确的年龄');
-					return;
-				}
-				value = (new Date()).getFullYear() - +value + 1;
-			}
-
-			if ( key !== 'signature' ) {
-				this.panelTransition = 'slideInRight';
-				this.detailTransition = 'slideInRight';
-
-				this.current_menu = 'setting';
-				this.detail_panel_show = false;
-			}
-
-			if ( this.userInfo.hasOwnProperty(key) && value !== oldValue ) {
-				this.$http({
-					url: '/api/user/updateUserInfo',
-					method: 'POST',
-					data: {
-						uid: uid,
-						key: key,
-						value: value
+			this.current_menu = 'setting';
+			this.detail_panel_show = false;
+			
+			switch(key) {
+				case key === 'birthday':
+					if ( ! /[1-9]\d{0,2}/.test(value) ) {
+						return oldValue;
 					}
-				}).then(function (res) {
-					if ( res && res.data && res.data.success ) {
-						this.userInfo[key] = value;
-					} else {
-						this.userInfo[key] = oldValue;
+					if ( +value < 6 ) {
+						alert('请填写正确的年龄');
+						return;
 					}
-				});
+					value = (new Date()).getFullYear() - +value + 1;
+					break;
+
+				case key !== 'signature':
+					this.panelTransition = 'slideInRight';
+					this.detailTransition = 'slideInRight';
+
+					break;
+
+				case this.userInfo.hasOwnProperty(key) && value !== oldValue:
+					this.$http({
+						url: '/api/user/updateUserInfo',
+						method: 'POST',
+						data: {
+							uid: uid,
+							key: key,
+							value: value
+						}
+					}).then(function (res) {
+						if ( res && res.data && res.data.success ) {
+							this.userInfo[key] = value;
+						} else {
+							this.userInfo[key] = oldValue;
+						}
+					});
+					break;
+
+				case 'password':
+					this.$http({
+						url: '/api/user/resetpassword',
+						method: 'POST',
+						data: {
+							uid: uid,
+							oldpass: this.old_password,
+							newpass: this.new_password,
+							newpass2: this.new_password2
+						}
+					}).then(function (res) {
+						console.log('test');
+					});
 			}
 		},
 
