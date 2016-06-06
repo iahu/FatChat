@@ -53,6 +53,10 @@ module.exports = Vue.extend({
 					that.$set('friends', friends );
 				}
 			});
+		},
+
+		hide: function () {
+			this.$parent.hide();
 		}
 	}
 });

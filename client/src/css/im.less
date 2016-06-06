@@ -986,3 +986,28 @@ ul, ol, li {padding: 0;margin: 0;list-style-type: none;}
 		}
 	}
 }
+
+#avatar-modal {
+	.modal-dialog {
+		width: 618px;
+	}
+
+	.modal-body {
+		padding: 10px;
+	}
+	.avatar-panel {
+		max-height: 360px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		// width: 1015px;
+	}
+	.avatar-item {
+		display: inline-block;
+		padding: 10px;
+		img {width: 64px;height: 64px;}
+
+		&.active {
+			background: #f2f2f2 url(/img/tick-icon.png) right top no-repeat;
+		}
+	}
+}

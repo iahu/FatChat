@@ -1,16 +1,17 @@
 module.exports = function (req, res, next) {
 	var db = require('../../lib/mydb.js');
-	var makeSessionID = require('../../lib/makeSessionID.js');
-	var querystring = require('querystring');
 	var paramsValidate = require('../../lib/paramsValidate.js');
 	var params = req.body;
-	var cookie = req.cookie;
-	var uid = +params.uid;
+	var uid = params.uid;
 	var key = params.key;
 	var value = params.value;
 	var error;
 
-	if ( typeof uid !== 'number' ) {
+	if (req.method !== 'POST') {
+		return next();
+	}
+
+	if ( /\D/.test(uid) ) {
 		error = 'auth fail';
 	}
 

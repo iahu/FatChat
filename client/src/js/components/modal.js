@@ -1,5 +1,7 @@
 var Vue = require('../lib/vue.js');
 var searchFriendsComp = require('./searchFriends.js');
+var avatarPanelComp = require('./avatarPanel.js');
+
 module.exports = Vue.extend({
 	template: '#modal-tpl',
 	props: ['arg'],
@@ -12,7 +14,8 @@ module.exports = Vue.extend({
 		};
 	},
 	components: {
-		'searchfriends': searchFriendsComp
+		'searchfriends': searchFriendsComp,
+		'avatarPanel': avatarPanelComp
 	},
 	methods: {
 		hide: function () {

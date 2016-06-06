@@ -18,9 +18,9 @@
 			<div class="main">
 				<div class="top-bar">
 					<div class="inner clearfix">
-						<div class="avatar-wrapper">
+						<a href="javascript:;" class="avatar-wrapper" @click="dispatchChildEvent('showModal', {id: 'avatar-modal', title: '修改头像', modalBody: 'avatarPanel'})">
 							<img v-if="userInfo.avatar" :src="'/img/avatar/'+userInfo.avatar" alt="{{userInfo.nickname}}" width="64" height="64">
-						</div>
+						</a>
 						<div class="name-info">
 							<h3 class="nickname">{{userInfo.nickname}}</h3>
 							<input type="text" class="signature" placeholder="个性签名" maxlength="32" :value="userInfo.signature" v-model="new_signature" @keydown.enter="submitSignature($event)"  @blur="updateSetting('signature')">
@@ -374,38 +374,56 @@
 						<button type="button" class="close" aria-hidden="true" @click="hide">&times;</button>
 						<h4 class="modal-title">{{title}}</h4>
 					</div>
-					<div class="modal-body">
-						<template :is="modalBody"></template>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default"  @click="hide">取消</button>
-						<button type="button" class="btn btn-primary" @click="hide">确定</button>
-					</div>
+					<template :is="modalBody"></template>
 				</div>
 			</div>
 		</div>
 	</script>
 	<script type="text/x-template" id="searchfriends-tpl">
-		<form action="#" id="addfriends-form" onsubmit="return false;" @submit='searchFriends'>
-			<div class="form-group search-box clearfix">
-				<input type="text" name="friends_info" id="friends_info" placeholder="输入对方邮箱或昵称来查找好友" autocomplete="no" autofocus="autofocus" v-model="friends_info">
-				<button type="submit">查找</button>
-			</div>
-		</form>
-		<div class="friends-list">
-			<div v-if="friends" v-for="friend in friends" class="friend-item clearfix" :class="friend.added ? 'active' : ''">
-				<img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}">
-				<div class="info">
-					<p>
-						<span class="nickname">{{friend.nickname}}</span>
-					</p>
-					<p>
-						<span class="gender">{{friend.gender | genderFilter}}</span>
-						<button class="add btn" @click="addFriends(friend.id)" :disabled="friend.added">加为好友</button>
-					</p>
+		<div class="modal-body">
+			<form action="#" id="addfriends-form" onsubmit="return false;" @submit='searchFriends'>
+				<div class="form-group search-box clearfix">
+					<input type="text" name="friends_info" id="friends_info" placeholder="输入对方邮箱或昵称来查找好友" autocomplete="no" autofocus="autofocus" v-model="friends_info">
+					<button type="submit">查找</button>
 				</div>
+			</form>
+			<div class="friends-list">
+				<div v-if="friends" v-for="friend in friends" class="friend-item clearfix" :class="friend.added ? 'active' : ''">
+					<img :src="'/img/avatar/'+friend.avatar" alt="{{friend.nickname}}">
+					<div class="info">
+						<p>
+							<span class="nickname">{{friend.nickname}}</span>
+						</p>
+						<p>
+							<span class="gender">{{friend.gender | genderFilter}}</span>
+							<button class="add btn" @click="addFriends(friend.id)" :disabled="friend.added">加为好友</button>
+						</p>
+					</div>
+				</div>
+				<span v-if="friends && friends.length === 0">没有找到相关用户</span>
 			</div>
-			<span v-if="friends && friends.length === 0">没有找到相关用户</span>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-primary" @click="hide">确定</button>
+		</div>
+	</script>
+
+	<script type="text/x-template" id="avatarpanel-tpl">
+		<div class="modal-body">
+			<div class="header">
+				<h4 class="title">从下面选择你喜欢的头像</h4>
+			</div>
+			<div class="avatar-panel webkitscrollbar" v-if="avatars">
+				<a href="javascript:;" class="avatar-item"
+					v-for="fileName in avatars" @click="select( fileName, $index )"
+					:class="{active: $index === activeIndex }">
+					<img :src="'/img/avatar/' + fileName" alt="{{fileName}}">
+				</a>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default"  @click="hide">取消</button>
+			<button type="button" class="btn btn-primary" @click="submit">确定</button>
 		</div>
 	</script>
 	<script src="/js/im.js"></script>

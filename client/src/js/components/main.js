@@ -87,7 +87,6 @@ module.exports = Vue.extend({
 		},
 
 		lastMsgList: function () {
-			var self = this;
 			var talkingWith = this.talkingWith;
 			var friends = _.keyBy(this.friends, function (o) {
 				return o.id;
@@ -192,7 +191,7 @@ module.exports = Vue.extend({
 				data: data
 			});
 		},
-		getSessionsData: function (unread) {
+		getSessionsData: function () {
 			if ( this.friendsIds.length === 0 ) {
 				this.msgList = [];
 				return;
@@ -447,6 +446,12 @@ module.exports = Vue.extend({
 					friends = friends.splice(i, 1);
 					break;
 				}
+			}
+		},
+
+		updateUserInfo: function (data) {
+			if ( this.userInfo.hasOwnProperty(data.key) ) {
+				this.userInfo[data.key] = data.value;
 			}
 		}
 	}
